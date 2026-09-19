@@ -68,7 +68,7 @@ public class InventoryCheck extends Check {
                 || attacker.getGameMode() == GameMode.SPECTATOR) {
             return false;
         }
-        flagAs("InventoryC", attacker, data, "obrazenia z otwartym GUI");
+        flagAs("InventoryC", attacker, data, "damage with open GUI");
         return true;
     }
 

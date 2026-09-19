@@ -1,88 +1,91 @@
 # FloppaAC
 
-**FloppaAC** to lekki, server-side anticheat dla serwerów Minecraft (Paper / Spigot),
-napisany w czystej Javie wyłącznie na Bukkit API. Zero zależności zewnętrznych,
-zero packet-listenerów: plugin składa się z jednego JAR-a, który wystarczy wrzucić
-do `plugins/` i zrestartować serwer.
+**FloppaAC** is a lightweight, server-side anticheat for Minecraft servers (Paper / Spigot),
+written in pure Java against the Bukkit API only. Zero external dependencies,
+zero packet listeners: the plugin ships as a single JAR you drop into `plugins/`
+and restart the server.
 
-> **Stan projektu:** FloppaAC nie jest antycheatem idealnym i zawiera sporo błędów
-> do poprawy. Projekt jest w aktywnej fazie rozwoju, progi detekcji są strojone
-> na żywym serwerze i część checków wymaga dopracowania, a niektóre znane problemy
-> (fałszywe alarmy przy niestabilnym FPS, detekcja niektórych trybów NoFall) są
-> korygowane w kolejnych wydaniach.
+> **Project status:** FloppaAC is not a perfect anticheat — it still has a fair
+> number of bugs to fix. The project is under active development, detection
+> thresholds are tuned on a live server, and some checks need more work. Known
+> issues (false positives on unstable FPS, detection of some NoFall modes) are
+> being corrected in subsequent releases.
 
-## Charakterystyka
+## Features
 
-- **31 checków** w czterech kategoriach: movement (13), combat (8), player (9),
-  bezpiecznik połączenia (1).
-- **100% Bukkit API** - brak zależności od NMS, packetevents czy innych bibliotek.
-  Konwersja między wersjami MC sprowadza się do kompilacji z nowszym paper-api.
-- **System VL (violation level)** - każdy check zbiera punkty, VL opada z czasem
-  (decay), kara dopiero po przekroczeniu progu z konfiguracji.
-- **Kary stopniowane:** setback (cofnięcie na legalny grunt) → kick; progi w pełni
-  konfigurowalne w `config.yml`.
-- **Wbudowany tryb testera:** każda flaga trafia bezpośrednio do flagowanego gracza
-  z nazwą checka, VL, pingiem, TPS i konkretnym pomiarem; komenda `/floppaac verbose`
-  pokazuje podejrzenia poniżej progu flagi.
-- **Ochrona legalnych graczy jako priorytet:** wstrzymanie checków movement przy
-  TPS < 18.5, luzniejsze progi przy wysokim pingu, exemptiony po wejściu /
-  teleportacji / respawnie, pojazdy i elytra poza pomiarem.
+- **31 checks** in four categories: movement (13), combat (8), player (9),
+  connection fuse (1).
+- **100% Bukkit API** — no NMS, packetevents or other library dependencies.
+  Porting between MC versions comes down to compiling against a newer paper-api.
+- **VL (violation level) system** — every check collects points, VL decays over
+  time; punishment only after the configured threshold is exceeded.
+- **Graduated punishments:** setback (return to legal ground) → kick; thresholds
+  fully configurable in `config.yml`.
+- **Built-in tester mode:** every flag is sent directly to the flagged player
+  with the check name, VL, ping, TPS and the concrete measurement;
+  `/floppaac verbose` shows suspicions below the flag threshold.
+- **Legal players first:** movement checks pause at TPS < 18.5, thresholds relax
+  at high ping, exemptions after join / teleport / respawn; vehicles and elytra
+  are excluded from measurement.
 
-## Checki
+## Checks
 
-| Kategoria | Checki |
+| Category | Checks |
 |---|---|
 | Movement | FlyA, FlyB, FlyGlide, GroundSpoofA, SpeedA, SpeedB, TimerA, JesusA, StepA, NoFallA, SpiderA, SprintSpoofA, PhaseA |
-| FakeLag / sieć | FakeLagA (choke: luka + burst), FakeLagB (atak w luce), FakeLagC (desync przy niskim pingu), LagGuard (bezpiecznik łącza, kick za skrajnie niestabilne połączenie) |
-| Combat | ReachA, KillAuraA (kąt), KillAuraJ (GCD rotacji), KillAuraBot (weryfikacja botem NPC), MultiActions, AutoClickerA, VelocityA, CriticalsA |
+| FakeLag / network | FakeLagA (choke: gap + burst), FakeLagB (attack in gap), FakeLagC (desync at low ping), LagGuard (connection fuse, kick for extremely unstable links) |
+| Combat | ReachA, KillAuraA (angle), KillAuraJ (rotation GCD), KillAuraBot (NPC verifier), MultiActions, AutoClickerA, VelocityA, CriticalsA |
 | Player | ScaffoldA, FastBreakA, NukerA, BadPacketsA, NoSlowA, InventoryA/B, AntiAutoWeb, AutoTrap |
 
-## Komendy
+## Commands
 
 ```
-/floppaac alerts    - alerty ekipy włącz/wyłącz
-/floppaac verbose   - podejrzenia poniżej progu flagi
-/floppaac vl        - własne VL dla każdego checka
-/floppaac debug     - telemetria: ping, TPS, luka ruchu, burst, CPS
-/floppaac status    - stan silnika (checki, TPS, gracze)
-/floppaac clear <gracz> - wyzeruj VL (wymaga floppaac.admin)
-/floppaac reload    - przeładowanie konfiguracji
+/floppaac alerts    - toggle team alerts
+/floppaac verbose   - suspicions below the flag threshold
+/floppaac vl        - your own VL per check
+/floppaac debug     - telemetry: ping, TPS, movement gap, burst, CPS
+/floppaac status    - engine state (checks, TPS, players)
+/floppaac clear <player> - reset VL (requires floppaac.admin)
+/floppaac reload    - reload configuration
 ```
 
-## Budowanie
+## Building
 
-Wymagany JDK 17+ (projekt budowany na JDK 25). Biblioteki do classpath są w `lib/`.
+Requires JDK 17+ (the project is built on JDK 25). You need the matching
+dependency JARs on the classpath: paper-api, all `net.kyori` (adventure) jars,
+bungeecord-chat, gson and guava — the same versions the target server ships.
 
 ```bat
 javac -nowarn -encoding UTF-8 --release 17 ^
-  -cp "lib/paper-api.jar;lib/adventure-api.jar;lib/adventure-key-4.14.0.jar;lib/examination-api-1.3.0.jar;lib/bungeecord-chat-1.16-R0.4.jar;lib/gson-2.10.1.jar;lib/guava-32.1.2-jre.jar;stub" ^
+  -cp "stub;paper-api.jar;adventure-*.jar;bungeecord-chat.jar;gson.jar;guava.jar" ^
   -d classes @sources.txt
 
 copy plugin.yml config.yml classes\
 jar cf FloppaAC.jar -C classes .
 ```
 
-`sources.txt` to lista wszystkich plików `.java` z `src/`. Katalog `stub/`
-zawiera minimalne klasy zastępcze `org.jetbrains.annotations`, żeby kompilacja
-przechodziła bez pobierania zależności.
+`sources.txt` is the list of all `.java` files under `src/`. The `stub/`
+directory contains minimal `org.jetbrains.annotations` replacement classes so
+the build passes without downloading dependencies.
 
-Testy (czysta Java, bez JUnit):
+Tests (plain Java, no JUnit):
 
 ```
 javac -d test-classes test/FloppaTest.java
-java -cp test-classes FloppaTest
+java -cp test-classes;classes;guava.jar FloppaTest
 ```
 
-## Znane ograniczenia
+## Known limitations
 
-- Antycheat jest server-side: freecam i xray nie mają sygnatury w pakietach
-  i nie podlegają detekcji (na własnym serwerze radzi to Paper anti-xray).
-- Zasada "zero zależności" oznacza brak symulacji ruchu tick-w-tick jak w Grim;
-  checki opierają się na modelach matematycznych ruchu (drag/accel), statystyce
-  luk pakietowych i konwergencji rotacji.
-- Cześć checków bywa zbyt czuła lub zbyt ślepa na niektóre legalne styl gry -
-  priorytetem roadmapy jest dopracowanie progów zamiast dokładania nowych checków.
+- The anticheat is server-side: freecam and xray leave no signature in packets
+  and cannot be detected (on your own server Paper's anti-xray removes the
+  advantage instead).
+- The "zero dependencies" rule means no tick-by-tick movement simulation as in
+  Grim; checks rely on mathematical movement models (drag/accel), packet-gap
+  statistics and rotation convergence.
+- Some checks are too sensitive or too blind to certain legal playstyles —
+  the roadmap priority is tuning thresholds rather than adding new checks.
 
-## Licencja
+## License
 
-Brak - do czasu decyzji autora.
+MIT — see [LICENSE](LICENSE).
