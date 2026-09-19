@@ -24,7 +24,7 @@ import pl.floppaac.util.PingUtil;
  * Uczciwe liczby (lancuch podaza za cheatem, wiec stala predkosc
  * daje staly przyrost nadmiaru na tick): 0.40 (1.2x) -> 0.01/tick
  * = 20 tickow; 0.45 -> 14; 0.50 -> 11; 0.60 -> 7. Czyli cheat
- * "1.3x w locie" lapanie po ok. 1 s utrzymania, przyspieszajacy
+ * "1.3x in flight" lapanie po ok. 1 s utrzymania, przyspieszajacy
  * fly (h rosnaca) juz po kilku tickach.
  *
  * Cap liczony od ZMIERZONEJ poprzedniej delty, wiec lod, woda,
@@ -125,12 +125,12 @@ public class SpeedBCheck extends Check {
                 perTickPushback(player, data, from);
             } else {
                 suspicious(player, data, String.format(
-                        "ped nad lancuchem nadmiar=%.3f (air=%d)",
+                        "momentum above chain excess=%.3f (air=%d)",
                         data.speedExcessSum, data.airTicks));
             }
         } else if (data.speedExcessSum > MomentumMath.EXCESS_FLAG * 0.5) {
             suspicious(player, data, String.format(
-                    "ped nad lancuchem (obserwacja) nadmiar=%.3f air=%d",
+                    "momentum above chain (observation) excess=%.3f air=%d",
                     data.speedExcessSum, data.airTicks));
         } else {
             data.speedBStreak = Math.max(0, data.speedBStreak - 1);

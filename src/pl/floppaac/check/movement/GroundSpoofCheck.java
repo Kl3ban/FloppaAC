@@ -70,7 +70,7 @@ public class GroundSpoofCheck extends Check {
         if (gap > 0.6) {
             data.noGroundStreak++;
             if (data.noGroundStreak >= 4) {
-                flag(player, data, String.format("grunt %.2f pod stopami, dy=%.3f",
+                flag(player, data, String.format("ground %.2f below feet, dy=%.3f",
                         gap, dy));
                 data.noGroundStreak = 0;
                 snapToGround(player, data);

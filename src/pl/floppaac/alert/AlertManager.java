@@ -52,7 +52,7 @@ public class AlertManager {
     public void alert(Player cheater, String check, CheckType type,
                       int vl, int ping, String details) {
         String format = color(plugin.getConfig().getString("alerts.format",
-                "&8[&bFloppaAC&8] &c%player% &7nie przeszedl &b%check% &8(VL: &c%vl%&8) &7ping: &e%ping% &7tps: &e%tps%"));
+                "&8[&bFloppaAC&8] &c%player% &7failed &b%check% &8(VL: &c%vl%&8) &7ping: &e%ping% &7tps: &e%tps%"));
         String tps = String.format("%.1f", plugin.getTpsMonitor().getTps());
         String msg = format.replace("%player%", cheater.getName())
                 .replace("%check%", check)
@@ -71,7 +71,7 @@ public class AlertManager {
         }
         if (plugin.getConfig().getBoolean("alerts.send-to-cheater", true)) {
             String cheaterFormat = color(plugin.getConfig().getString("alerts.cheater-format",
-                    "&8[&bFloppaAC&8] &eWykryto: &b%check% &8(VL: &c%vl%&8) &7ping: &e%ping% &7tps: &e%tps%"));
+                    "&8[&bFloppaAC&8] &eDetected: &b%check% &8(VL: &c%vl%&8) &7ping: &e%ping% &7tps: &e%tps%"));
             String personal = cheaterFormat.replace("%player%", cheater.getName())
                     .replace("%check%", check)
                     .replace("%vl%", String.valueOf(vl))

@@ -141,7 +141,7 @@ public class FakeLagCheck extends Check {
                 data.chokeStreak++;
                 if (data.chokeStreak == 1) {
                     suspLag(player, data, String.format(
-                            "luka ruchu %dms ping=%d (obserwacja)", gapMs, ping));
+                            "move gap %dms ping=%d (observation)", gapMs, ping));
                 }
             }
         } else if (gapMs >= 180L) {
@@ -169,7 +169,7 @@ public class FakeLagCheck extends Check {
                 data.lastMoveGapMs = 0L;
             } else {
                 suspLag(player, data, String.format(
-                        "burst po luce %d/200ms (epizod %d)", burst, data.chokeStreak));
+                        "burst after gap %d/200ms (episode %d)", burst, data.chokeStreak));
             }
         } else if (!freezeAsylum && FakeLagMath.isShortChoke(gapMs, burst, ping)) {
             // Krotkie powtarzalne luki 180-300 ms z burstem 4+.
@@ -182,7 +182,7 @@ public class FakeLagCheck extends Check {
                 data.shortChokeStreak = 0;
             } else if (data.shortChokeStreak == 2) {
                 suspLag(player, data, String.format(
-                        "krotkie luki %dms (epizod %d)", gapMs, data.shortChokeStreak));
+                        "short gaps %dms (episode %d)", gapMs, data.shortChokeStreak));
             }
         }
 
@@ -208,11 +208,11 @@ public class FakeLagCheck extends Check {
             if (now - data.lastDesyncFlagMs > 8000L) {
                 data.lastDesyncFlagMs = now;
                 flagLag("FakeLagC", player, data, String.format(
-                        "desync-czasow mediana=%dms ruchow/s=%d ping=%d drift=%.0f%%",
+                        "timing-desync median=%dms moves/s=%d ping=%d drift=%.0f%%",
                         median, movesLastSec, ping, driftPct));
             } else {
                 suspLag(player, data, String.format(
-                        "desync-czasow mediana=%dms drift=%.0f%%", median, driftPct));
+                        "timing-desync median=%dms drift=%.0f%%", median, driftPct));
             }
         }
     }
@@ -242,7 +242,7 @@ public class FakeLagCheck extends Check {
             // Kampienie (stanie i bicie) to nie desync hitboxa.
             if (data.lastHorizontalDist < 0.03) {
                 suspLag(player, data, String.format(
-                        "atak %dms po ruchu (kampienie?)", sinceMove));
+                        "attack %dms after move (camping?)", sinceMove));
                 return false;
             }
             // Gracz stoi w miejscu i bije: legalne. Wymagamy wyraznego
@@ -250,11 +250,11 @@ public class FakeLagCheck extends Check {
             int recentMoves = FakeLagMath.burstInWindow(data.moveTimes, now, 2000L);
             if (recentMoves >= 6) {
                 return flagLag("FakeLagB", player, data, String.format(
-                        "atak w luce ruchu %dms ping=%d tps=%.1f",
+                        "attack in move gap %dms ping=%d tps=%.1f",
                         sinceMove, ping, tps));
             }
             suspLag(player, data, String.format(
-                    "atak %dms po ruchu (kampienie?)", sinceMove));
+                    "attack %dms after move (camping?)", sinceMove));
         }
         return false;
     }

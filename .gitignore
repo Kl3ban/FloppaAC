@@ -1,14 +1,18 @@
-# Artefakty kompilacji
+# Build artifacts
 classes/
 test-classes/
 *.class
 
-# Jar-artefakty i biblioteki zewnętrzne (Paper API itd.) - nie w repo
+# Jar artifacts and external libraries (Paper API etc.) - not in repo
 *.jar
 
-# Plik z listą źródeł generowany przy buildzie
+# Generated source list used by the build
 sources.txt
 
-# Śmieci systemowe
+# Local build script (machine-specific paths) - not in repo
+build.cmd
+stub-classes/
+
+# System junk
 Thumbs.db
 .DS_Store

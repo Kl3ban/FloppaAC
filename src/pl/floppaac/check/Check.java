@@ -240,7 +240,7 @@ public abstract class Check {
             dispatch(cmd, player, vlName);
         } else if (effectiveVl >= kickVl) {
             String cmd = plugin.getConfig().getString("punishments.kick-command",
-                    "kick %player% FloppaAC: wykryto cheat (%check%)");
+                    "kick %player% FloppaAC: cheat detected (%check%)");
             dispatch(cmd, player, vlName);
         }
     }
@@ -252,7 +252,7 @@ public abstract class Check {
      */
     protected void kickNow(Player player, String vlName) {
         String cmd = plugin.getConfig().getString("punishments.kick-command",
-                "kick %player% FloppaAC: wykryto cheat (%check%)");
+                "kick %player% FloppaAC: cheat detected (%check%)");
         dispatch(cmd, player, vlName);
     }
 

@@ -85,7 +85,7 @@ public class FastBreakCheck extends Check {
         data.digStartMs = 0L;
         double hardness = data.digHardness;
         if (hardness < 0.0) {
-            flagAs("FastBreakB", player, data, broken.getType().name() + " niezniszczalny");
+            flagAs("FastBreakB", player, data, broken.getType().name() + " unbreakable");
             return;
         }
         long tookTicks = Math.max(1L, tookMs / 50L);

@@ -51,7 +51,7 @@ public class AutoClickerCheck extends Check {
             double std = ClickStats.stddev(data.clickGaps);
             if (cps >= 7.0 && std < 8.0) {
                 suspicious(attacker, data, String.format(
-                        "rowne kliki cps=%.1f std=%.1fms (obserwacja)", cps, std));
+                        "equal clicks cps=%.1f std=%.1fms (observation)", cps, std));
             }
         }
     }

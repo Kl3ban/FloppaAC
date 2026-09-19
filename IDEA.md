@@ -1,1 +1,1 @@
-Floppaantycheat do minecraft wersja 26.1.2 (łatwa konwertacja na nowsze wersje i starsze)
+Floppa anticheat for Minecraft, targeting 26.1.2 (easy conversion to newer and older versions)

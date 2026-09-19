@@ -63,7 +63,7 @@ public class LagGuardCheck extends Check {
         }
         if (data.bigGaps.size() >= maxGaps) {
             String cmd = plugin.getConfig().getString("lagguard.kick-command",
-                    "kick %player% FloppaAC: niestabilne polaczenie (lag)");
+                    "kick %player% FloppaAC: unstable connection (lag)");
             String c = cmd.replace("%player%", player.getName());
             Bukkit.getScheduler().runTask(plugin, new Runnable() {
                 @Override
@@ -72,10 +72,10 @@ public class LagGuardCheck extends Check {
                 }
             });
             plugin.getLogger().info("[LagGuard] " + player.getName()
-                    + " kicked za " + data.bigGaps.size() + " luk w 60 s");
+                    + " kicked for " + data.bigGaps.size() + " gaps in 60 s");
             data.bigGaps.clear();
         } else if (data.bigGaps.size() >= maxGaps - 2) {
-            suspicious(player, data, "niestabilne lacze "
+            suspicious(player, data, "unstable connection "
                     + data.bigGaps.size() + "/" + maxGaps + " luk");
         }
     }

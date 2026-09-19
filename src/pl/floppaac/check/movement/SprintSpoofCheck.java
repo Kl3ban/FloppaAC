@@ -50,7 +50,7 @@ public class SprintSpoofCheck extends Check {
         if (angle > 120.0) {
             data.sprintStreak++;
             if (data.sprintStreak >= 5) {
-                flag(player, data, String.format("kat=%.0f dist=%.2f",
+                flag(player, data, String.format("angle=%.0f dist=%.2f",
                         angle, horizontal));
                 data.sprintStreak = 0;
             }
@@ -93,7 +93,7 @@ public class SprintSpoofCheck extends Check {
         if (player.isGliding()) {
             data.glideSprintStreak++;
             if (data.glideSprintStreak >= 5) {
-                flagAs("SprintD", player, data, "sprint w locie x"
+                flagAs("SprintD", player, data, "sprint while flying x"
                         + data.glideSprintStreak);
                 data.glideSprintStreak = 0;
             }
@@ -103,7 +103,7 @@ public class SprintSpoofCheck extends Check {
         if (submerged(player) && !player.isSwimming() && !player.isRiptiding()) {
             data.waterSprintStreak++;
             if (data.waterSprintStreak >= 8) {
-                flagAs("SprintE", player, data, "sprint pod woda x"
+                flagAs("SprintE", player, data, "sprint underwater x"
                         + data.waterSprintStreak);
                 data.waterSprintStreak = 0;
             }

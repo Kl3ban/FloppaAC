@@ -122,7 +122,7 @@ public class KillAuraBotCheck extends Check {
                 // Ignorowane.
             }
             try {
-                plugin.getLogger().warning("[Verify] Nie udalo sie zespawnowac wieśniaka dla "
+                plugin.getLogger().warning("[Verify] Failed to spawn villager for "
                         + suspect.getName());
             } catch (Exception e) {
                 // Ignorowane.
@@ -149,7 +149,7 @@ public class KillAuraBotCheck extends Check {
                 // Ignorowane.
             }
             try {
-                plugin.getLogger().warning("[Verify] Konfiguracja bota nie powiodla sie dla "
+                plugin.getLogger().warning("[Verify] Bot configuration failed for "
                         + suspect.getName() + ": " + e);
             } catch (Exception ex) {
                 // Ignorowane.
@@ -161,7 +161,7 @@ public class KillAuraBotCheck extends Check {
         active.put(data.uuid, v);
         botToSuspect.put(bot.getUniqueId(), data.uuid);
         announceStaff(suspect, "weryfikacja KillAura: niewidzialny bot 15 s (VL aury="
-                + auraVl(data) + "). Trafienie bota 2x to potwierdzenie.");
+                + auraVl(data) + "). Hitting the bot twice confirms.");
         try {
             v.task = Bukkit.getScheduler().runTaskTimer(
                     plugin, new OrbitRunner(v), 0L,
@@ -199,7 +199,7 @@ public class KillAuraBotCheck extends Check {
             }
             endSilent(suspect);
         } else {
-            suspicious(attacker, data, "trafienie w bota (1/2)");
+            suspicious(attacker, data, "bot hit (1/2)");
         }
         return true;
     }
@@ -285,10 +285,10 @@ public class KillAuraBotCheck extends Check {
         try {
             Player online = Bukkit.getPlayer(suspect);
             if (online != null) {
-                announceStaff(online, "weryfikacja czysta (trafien w bota: "
+                announceStaff(online, "verification clean (bot hits: "
                         + hits + "), VL aury -2.");
             } else {
-                plugin.getLogger().info("[Verify] Weryfikacja czysta, gracz offline.");
+                plugin.getLogger().info("[Verify] Verification clean, player offline.");
             }
         } catch (Exception e) {
             // Ignorowane.

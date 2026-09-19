@@ -73,7 +73,7 @@ public class KillAuraCheck extends Check {
         } else {
             data.snapStreak = Math.max(0, data.snapStreak - 1);
             if (angle > maxAngle - 15.0) {
-                suspicious(attacker, data, String.format("kat graniczny %.0f", angle));
+                suspicious(attacker, data, String.format("borderline angle %.0f", angle));
             }
         }
     }
@@ -190,7 +190,7 @@ public class KillAuraCheck extends Check {
             data.noRotStreak++;
             if (data.noRotStreak >= 4) {
                 signalAs("KillAuraD", attacker, data, String.format(
-                        "cel %.2f rot %.2f x%d", victimMoved, rotD, data.noRotStreak));
+                        "aim %.2f rot %.2f x%d", victimMoved, rotD, data.noRotStreak));
                 data.noRotStreak = 0;
             }
         } else {
@@ -219,8 +219,8 @@ public class KillAuraCheck extends Check {
             // Pare atak-machniecie w 750 ms zeruje licznik w onSwing.
             data.noSwingStrikes++;
             if (data.noSwingStrikes >= 4) {
-                signalAs("KillAuraE", attacker, data, "atak " + sinceSwing
-                        + "ms po machnieciu x" + data.noSwingStrikes);
+                signalAs("KillAuraE", attacker, data, "attack " + sinceSwing
+                        + "ms after swing x" + data.noSwingStrikes);
                 data.noSwingStrikes = 0;
             }
         } else {
@@ -325,7 +325,7 @@ public class KillAuraCheck extends Check {
         data.losStreak++;
         if (data.losStreak >= 4) {
             signalAs("KillAuraH", attacker, data,
-                    "brak linii wzroku x" + data.losStreak);
+                    "no line of sight x" + data.losStreak);
             data.losStreak = 0;
         }
     }

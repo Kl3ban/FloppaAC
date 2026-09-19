@@ -55,7 +55,7 @@ public class AntiAutoWebCheck extends Check {
         }
         q.addLast(now);
         if (q.size() >= 4) {
-            flag(player, data, "web na bycie x" + q.size() + "/3s");
+            flag(player, data, "web on entity x" + q.size() + "/3s");
             q.clear();
         }
     }

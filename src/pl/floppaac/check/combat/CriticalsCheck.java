@@ -61,7 +61,7 @@ public class CriticalsCheck extends Check {
                         data.critStreak, attacker.getFallDistance(), dy));
                 data.critStreak = 0;
             } else if (data.critStreak == 2) {
-                suspicious(attacker, data, "krytyk bez spadku (obserwacja)");
+                suspicious(attacker, data, "crit without fall (observation)");
             }
         } else {
             data.critStreak = Math.max(0, data.critStreak - 1);

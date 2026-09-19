@@ -67,12 +67,12 @@ public class FloppaAC extends JavaPlugin {
                     }, decaySeconds * 20L, decaySeconds * 20L);
         }
 
-        getLogger().info("FloppaAC " + VERSION + " wlaczony. Checkow: " + checkManager.size());
+        getLogger().info("FloppaAC " + VERSION + " enabled. Checks: " + checkManager.size());
     }
 
     @Override
     public void onDisable() {
-        getLogger().info("FloppaAC wylaczony.");
+        getLogger().info("FloppaAC disabled.");
     }
 
     public DataManager getDataManager() {

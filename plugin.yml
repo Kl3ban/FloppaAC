@@ -2,21 +2,21 @@ name: FloppaAC
 version: 1.8.2
 main: pl.floppaac.FloppaAC
 api-version: '1.13'
-author: FloppaAC Team
-description: Wydajny server-side anticheat. FakeLag, KillAura, Speed, Fly. Zero zaleznosci.
+author: Kl3ban
+description: Lightweight server-side anticheat. FakeLag, KillAura, Speed, Fly. Zero dependencies.
 commands:
   floppaac:
-    description: Zarzadzanie FloppaAC
+    description: Manage FloppaAC
     usage: /floppaac <alerts|verbose|vl|clear|status|debug|reload>
     permission: floppaac.staff
     aliases: [flac, fac]
 permissions:
   floppaac.staff:
-    description: Alerty i podglad VL
+    description: Alerts and VL overview
     default: op
   floppaac.admin:
-    description: Zarzadzanie karami i reload
+    description: Punishment management and reload
     default: op
   floppaac.bypass:
-    description: Omijanie kontroli
+    description: Bypass checks
     default: false

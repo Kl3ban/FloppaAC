@@ -35,7 +35,7 @@ public class NukerCheck extends Check {
             }
         }
         if (in100 >= 3) {
-            flag(player, data, in100 + " w 100ms");
+            flag(player, data, in100 + " in 100ms");
             data.nukeTimes.clear();
         }
     }

@@ -34,7 +34,7 @@ public class JesusCheck extends Check {
             if (Math.abs(to.getY() - Math.floor(to.getY())) < 0.15 && horizontal > 0.1) {
                 data.jesusStreak++;
                 if (data.jesusStreak >= 6) {
-                    flag(player, data, "poziom na wodzie");
+                    flag(player, data, "water-surface");
                     data.jesusStreak = 0;
                 }
                 return;

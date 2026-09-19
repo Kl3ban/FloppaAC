@@ -52,10 +52,10 @@ public class TimerCheck extends Check {
             data.timerLastExceedNs = now;
             data.timerStreak++;
             if (data.timerStreak >= 3) {
-                flag(player, data, "bilans x" + data.timerStreak);
+                flag(player, data, "balance x" + data.timerStreak);
                 data.timerStreak = 0;
             } else if (data.timerStreak == 2) {
-                suspicious(player, data, "timer narasta (obserwacja)");
+                suspicious(player, data, "timer drifting (observation)");
             }
         }
     }

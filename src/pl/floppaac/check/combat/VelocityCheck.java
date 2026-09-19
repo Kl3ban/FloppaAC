@@ -141,7 +141,7 @@ public class VelocityCheck extends Check {
             } else {
                 double minRatio = cfgDouble("min-ratio", 0.2);
                 double limit = Math.max(0.10, 0.12 * minRatio * 5.0);
-                detailKind = String.format("odrzut=%.3f", moved);
+                detailKind = String.format("kb=%.3f", moved);
                 if (moved < limit) {
                     cancelled = true;
                 }
@@ -149,7 +149,7 @@ public class VelocityCheck extends Check {
         } else {
             double minRatio = cfgDouble("min-ratio", 0.2);
             double limit = Math.max(0.10, 0.12 * minRatio * 5.0);
-            detailKind = String.format("odrzut=%.3f", moved);
+            detailKind = String.format("kb=%.3f", moved);
             if (moved < limit) {
                 cancelled = true;
             }

@@ -247,7 +247,7 @@ public class CombatListener implements Listener {
         double horiz = Math.hypot(v.getX(), v.getZ());
         double strength = Math.max(horiz, Math.abs(v.getY()) * 0.8);
         // Odbicie pionowe po odrzucie moze wygladac jak poczatek lotu:
-        // immunizacja na sygnaly "brak grawitacji" skalowana sila odrzutu.
+        // immunizacja na sygnaly "no gravity" skalowana sila odrzutu.
         vd.kbTicksLeft = 20 + (int) Math.min(40, strength * 40.0);
         // Odrzut moze wypchnac poza limit predkosci poziomej.
         vd.kbSinceBigMs = now;

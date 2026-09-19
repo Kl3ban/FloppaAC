@@ -48,7 +48,7 @@ public class InventoryCheck extends Check {
         }
         data.invAtkStreak++;
         if (data.invAtkStreak >= 2) {
-            flagAs("InventoryB", attacker, data, "atak z GUI x" + data.invAtkStreak);
+            flagAs("InventoryB", attacker, data, "attack from GUI x" + data.invAtkStreak);
             data.invAtkStreak = 0;
         }
     }
@@ -92,7 +92,7 @@ public class InventoryCheck extends Check {
         if (player.isSprinting() && horizontal > 0.25) {
             data.invMoveStreak++;
             if (data.invMoveStreak >= 5) {
-                flagAs("InventoryB", player, data, "sprint z GUI x" + data.invMoveStreak);
+                flagAs("InventoryB", player, data, "sprint from GUI x" + data.invMoveStreak);
                 data.invMoveStreak = 0;
             }
         } else if (!rotated) {

@@ -143,7 +143,7 @@ public class NoFallCheck extends Check {
                     claimedP = 0.0f;
                 }
                 flag(player, data, String.format(
-                        "no-ground: upadek=%.1f zgloszone=%.1f (%d tickow nad gruntem)",
+                        "no-ground: fall=%.1f claimed=%.1f (%d ticks above ground)",
                         fellP, claimedP, PLATEAU_TICKS));
             }
         } else if (!solidBelow || dy <= -0.05) {
@@ -214,7 +214,7 @@ public class NoFallCheck extends Check {
                         p.setFallDistance(0.0f);
                     }
                     flag(p, d, String.format(
-                            "nofall wylaczony: upadek=%.1f zgloszone=%.1f",
+                            "nofall off: fall=%.1f claimed=%.1f",
                             fell, claimedF));
                 }
             }, 3L);

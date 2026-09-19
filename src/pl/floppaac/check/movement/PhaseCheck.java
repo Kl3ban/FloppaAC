@@ -52,7 +52,7 @@ public class PhaseCheck extends Check {
     private void phaseHit(Player player, PlayerData data, String block, double dist) {
         data.phaseStreak++;
         if (data.phaseStreak >= 2) {
-            flag(player, data, String.format("w bloku %s dist=%.2f",
+            flag(player, data, String.format("inside block %s dist=%.2f",
                     block, dist));
             data.phaseStreak = 0;
         }

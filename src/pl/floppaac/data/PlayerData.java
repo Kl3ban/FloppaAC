@@ -222,7 +222,7 @@ public class PlayerData {
     // --- Knockback (PlayerVelocityEvent): shared exemption for movement checks ---
     /** Timestamp ostatniego pakietu velocity od serwera (ms). */
     public long kbArmedMs;
-    /** Pozostale ticki immunizacji na sygnaly "brak grawitacji/odbicia". */
+    /** Pozostale ticki immunizacji na sygnaly "no gravity/recoil". */
     public int kbTicksLeft;
     /** Timestamp ostatniego odrzutu/impulsu wplywajacego na predkosc pozioma. */
     public long kbSinceBigMs;
@@ -234,7 +234,7 @@ public class PlayerData {
     public int serverAirTicks;
     /** Ostatnia weryfikacja botem KillAura (ms). */
     public long lastBotVerifyMs;
-    /** Tiki "stania w powietrzu" nad gruntem (NoFall No-Ground). */
+    /** Tiki "standing in air" nad gruntem (NoFall No-Ground). */
     public int noFallPlateauTicks;
     public long lastGroundTickMs;
     /** Surowa przerwa miedzy ruchami pozycyjnymi w ms (takze <180). */

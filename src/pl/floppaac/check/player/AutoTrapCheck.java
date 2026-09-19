@@ -50,7 +50,7 @@ public class AutoTrapCheck extends Check {
         }
         q.addLast(now);
         if (q.size() >= 8) {
-            flag(player, data, "box na celu x" + q.size() + "/3s");
+            flag(player, data, "hitbox on target x" + q.size() + "/3s");
             q.clear();
         }
     }

@@ -96,11 +96,11 @@ public class MultiActionsCheck extends Check {
         if (detected) {
             data.multiAStreak++;
             if (data.multiAStreak >= 3) {
-                flagAs("MultiA", attacker, data, "cios z podniesiona reka x"
+                flagAs("MultiA", attacker, data, "hit with raised hand x"
                         + data.multiAStreak);
                 data.multiAStreak = 0;
             } else {
-                suspicious(attacker, data, "cios z podniesiona reka ("
+                suspicious(attacker, data, "hit with raised hand ("
                         + data.multiAStreak + "/3, ghost)");
             }
             // Ghost od pierwszego ciosu: multitool nie zadaje obrazen.
@@ -134,7 +134,7 @@ public class MultiActionsCheck extends Check {
         if (raised || continuousRaised) {
             data.multiBStreak++;
             if (data.multiBStreak >= 3) {
-                flagAs("MultiB", player, data, "machniecie z podniesiona reka x"
+                flagAs("MultiB", player, data, "swing with raised hand x"
                         + data.multiBStreak);
                 data.multiBStreak = 0;
             }
