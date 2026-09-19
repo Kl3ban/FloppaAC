@@ -1,0 +1,105 @@
+# ============================================================
+#  FloppaAC 1.8.2 - konfiguracja
+#  VL = violation level. Kazdy check zbiera VL, ktore spada
+#  z czasem (decay). Kara dopiero po przekroczeniu progu.
+#  TRYB TESTOWY: kicki zamiast banow (ban-vl = 999999).
+#  Stabilny CPS 8-12 NIE flaguje. Flaga tylko przy nieludzkich
+#  wartosciach (20+ CPS, metronom ponizej 2 ms, serie <40 ms).
+# ============================================================
+
+prefix: "&8[&bFloppaAC&8]"
+
+# Co ile sekund VL gracza spada o 1 (0 = wylacz decay)
+vl-decay-seconds: 30
+
+# Ponizej tego TPS kontrole movement sa wstrzymane
+min-tps: 18.5
+
+# Gracze z pingiem powyzej tego dostaja luzniejsze progi
+high-ping: 220
+high-ping-leniency: 0.35
+
+alerts:
+  format: "&8[&bFloppaAC&8] &c%player% &7nie przeszedl &b%check% &8(VL: &c%vl%&8) &7ping: &e%ping% &7tps: &e%tps%"
+  hover-details: true
+  # Kopia kazdej flagi BEZPOSREDNIO do testowanego gracza
+  send-to-cheater: true
+  cheater-format: "&8[&bFloppaAC&8] &eWykryto: &b%check% &8(VL: &c%vl%&8) &7ping: &e%ping% &7tps: &e%tps%"
+  # Podejrzenia ponizej progu flagi (tryb verbose)
+  verbose-enabled: true
+
+punishments:
+  # Movement: najpierw cofniecie na legalny grunt, potem kick
+  movement-setback-vl: 2
+  movement-kick-vl: 12
+  movement-ban-vl: 999999
+  # FakeLag: wlasny niski prog kicka, bo psuje gre innym od razu
+  fakelag-kick-vl: 6
+  # Combat: szybciej, bo psuje gre innym
+  combat-kick-vl: 8
+  combat-ban-vl: 999999
+  # Player: scaffold, nuker, badpackets
+  player-kick-vl: 10
+  player-ban-vl: 999999
+  kick-command: "kick %player% FloppaAC: wykryto cheat (%check%)"
+  ban-command: "ban %player% FloppaAC: cheat (%check%)"
+
+# Bezpiecznik lacza: kick przy skrajnie niestabilnym ruchu
+lagguard:
+  kick-command: "kick %player% FloppaAC: niestabilne polaczenie (lag)"
+
+checks:
+  FlyA: { enabled: true, max-vl: 30 }
+  FlyB: { enabled: true, max-vl: 30 }
+  FlyC: { enabled: true, max-vl: 30 }
+  GroundSpoofA: { enabled: true, max-vl: 30 }
+  SpeedA: { enabled: true, max-vl: 30, base-walk: 0.2155, base-sprint: 0.2806, potion-bonus: 0.06 }
+  SpeedB: { enabled: true, max-vl: 30, streak: 2 }
+  TimerA: { enabled: true, max-vl: 30, drift-ms: 250 }
+  JesusA: { enabled: true, max-vl: 30 }
+  StepA: { enabled: true, max-vl: 30, max-step: 0.6 }
+  NoFallA: { enabled: true, max-vl: 30 }
+  SpiderA: { enabled: true, max-vl: 30 }
+  SprintA: { enabled: true, max-vl: 30 }
+  SprintB: { enabled: true, max-vl: 30 }
+  SprintC: { enabled: true, max-vl: 30 }
+  SprintD: { enabled: true, max-vl: 30 }
+  SprintE: { enabled: true, max-vl: 30 }
+  FakeLagA: { enabled: true, max-vl: 20, min-gap-ms: 300, min-burst: 6, episodes: 2, short-episodes: 5 }
+  FakeLagB: { enabled: true, max-vl: 20, attack-gap-ms: 250 }
+  FakeLagC: { enabled: true, max-vl: 20 }
+  WebA: { enabled: true, max-vl: 30, max-in-web: 0.15, max-fall-in-web: 0.32 }
+  PhaseA: { enabled: true, max-vl: 30 }
+  ReachA: { enabled: true, max-vl: 20, max-reach: 3.2 }
+  KillAuraA: { enabled: true, max-vl: 20, max-angle: 55.0 }
+  KillAuraB: { enabled: true, max-vl: 20, max-targets-per-second: 6 }
+  KillAuraC: { enabled: true, max-vl: 20 }
+  KillAuraD: { enabled: true, max-vl: 20 }
+  KillAuraE: { enabled: true, max-vl: 20 }
+  KillAuraF: { enabled: true, max-vl: 20 }
+  KillAuraG: { enabled: true, max-vl: 20 }
+  KillAuraH: { enabled: true, max-vl: 20 }
+  KillAuraI: { enabled: true, max-vl: 20 }
+  KillAuraJ: { enabled: true, max-vl: 20 }
+  KillAuraBot: { enabled: true, max-vl: 20 }
+  MultiA: { enabled: true, max-vl: 20 }
+  MultiB: { enabled: true, max-vl: 20 }
+  AutoClickerA: { enabled: true, max-vl: 20 }
+  VelocityA: { enabled: true, max-vl: 20, min-ratio: 0.2 }
+  CriticalsA: { enabled: true, max-vl: 20 }
+  ScaffoldA: { enabled: true, max-vl: 25, min-interval-ms: 120, min-count: 5 }
+  FastBreakA: { enabled: true, max-vl: 25, max-blocks-per-second: 4 }
+  FastBreakB: { enabled: true, max-vl: 25 }
+  NukerA: { enabled: true, max-vl: 25 }
+  BadPacketsA: { enabled: true, max-vl: 25 }
+  WebB: { enabled: true, max-vl: 20 }
+  AutoTrapA: { enabled: true, max-vl: 20 }
+  NoFallB: { enabled: true, max-vl: 20 }
+  PlaceFaceA: { enabled: true, max-vl: 25 }
+  PlaceWallA: { enabled: true, max-vl: 25 }
+  AirPlaceA: { enabled: true, max-vl: 25 }
+  NoSlowA: { enabled: true, max-vl: 25 }
+  InventoryA: { enabled: true, max-vl: 25, max-clicks-per-second: 12 }
+  InventoryB: { enabled: true, max-vl: 25 }
+  InventoryC: { enabled: true, max-vl: 25 }
+  LagGuard: { enabled: true, gap-ms: 900, max-gaps-per-minute: 6 }

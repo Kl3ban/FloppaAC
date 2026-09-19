@@ -1,0 +1,14 @@
+# Artefakty kompilacji
+classes/
+test-classes/
+*.class
+
+# Jar-artefakty i biblioteki zewnętrzne (Paper API itd.) - nie w repo
+*.jar
+
+# Plik z listą źródeł generowany przy buildzie
+sources.txt
+
+# Śmieci systemowe
+Thumbs.db
+.DS_Store
