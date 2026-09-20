@@ -32,6 +32,7 @@ import pl.floppaac.check.player.NoSlowCheck;
 import pl.floppaac.check.player.NukerCheck;
 import pl.floppaac.check.player.ScaffoldCheck;
 import pl.floppaac.check.player.XrayCheck;
+import pl.floppaac.check.player.DigReachCheck;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -80,6 +81,7 @@ public class CheckManager {
         add(new InventoryCheck(plugin));
         add(new LagGuardCheck(plugin));
         add(new XrayCheck(plugin));
+        add(new DigReachCheck(plugin));
     }
 
     private void add(Check check) {

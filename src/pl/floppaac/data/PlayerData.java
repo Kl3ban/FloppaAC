@@ -228,6 +228,9 @@ public class PlayerData {
 
     public int fastBreakBStreak;
 
+    public int digReachStreak;
+    public long digReachBreachMs;
+
     public final Deque<Long> nukeTimes = new ArrayDeque<Long>();
     public final Deque<Long> invClickTimes = new ArrayDeque<Long>();
     public long lastPlaceTime;

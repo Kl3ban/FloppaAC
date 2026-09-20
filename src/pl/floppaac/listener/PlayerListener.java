@@ -29,6 +29,7 @@ import pl.floppaac.check.player.NukerCheck;
 import pl.floppaac.check.movement.SprintSpoofCheck;
 import pl.floppaac.check.player.ScaffoldCheck;
 import pl.floppaac.check.player.XrayCheck;
+import pl.floppaac.check.player.DigReachCheck;
 import pl.floppaac.data.PlayerData;
 
 public class PlayerListener implements Listener {
@@ -44,6 +45,7 @@ public class PlayerListener implements Listener {
     private final InventoryCheck inventory;
     private final pl.floppaac.check.combat.KillAuraBotCheck botVerify;
     private final XrayCheck xray;
+    private final DigReachCheck digReach;
 
     public PlayerListener(FloppaAC plugin) {
         this.plugin = plugin;
@@ -58,6 +60,7 @@ public class PlayerListener implements Listener {
         inventory = cm.get("InventoryA", InventoryCheck.class);
         botVerify = cm.get("KillAuraBot", pl.floppaac.check.combat.KillAuraBotCheck.class);
         xray = cm.get("XrayA", XrayCheck.class);
+        digReach = cm.get("DigReachA", DigReachCheck.class);
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
@@ -255,6 +258,9 @@ public class PlayerListener implements Listener {
         PlayerData data = plugin.getDataManager().get(player);
         fastBreak.handle(player, data, e.getBlock());
         nuker.handle(player, data, e.getBlock());
+        if (digReach.handle(player, data, e.getBlock())) {
+            e.setCancelled(true);
+        }
         xray.handle(player, data, e.getBlock());
     }
 

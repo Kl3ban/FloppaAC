@@ -85,3 +85,4 @@ checks:
   InventoryC: { enabled: true, max-vl: 25 }
   LagGuard: { enabled: true, gap-ms: 900, max-gaps-per-minute: 6 }
   XrayA: { enabled: true, max-vl: 25, window: 30, min-ores: 8, max-waste-per-ore: 1.2, los-streak: 4 }
+  DigReachA: { enabled: true, max-vl: 20, max-reach: 4.5, slack: 1.5, streak: 2 }

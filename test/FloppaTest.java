@@ -3,6 +3,7 @@ import java.util.Deque;
 
 import pl.floppaac.util.MomentumMath;
 import pl.floppaac.util.OreStats;
+import pl.floppaac.util.ReachMath;
 import pl.floppaac.util.RotationMath;
 
 public class FloppaTest {
@@ -53,6 +54,8 @@ public class FloppaTest {
         testRatioTunnelRatFlagged();
         testLosStreakThreshold();
         testWindowCapPush();
+        testReachMathDistances();
+        testReachMathBreachBoundary();
         System.out.println("PASS=" + pass + " FAIL=" + fail);
         if (fail > 0) {
             System.exit(1);
@@ -613,5 +616,23 @@ public class FloppaTest {
         ok(w.size() == 30 && w.peekFirst().longValue() != 0L
                 && w.pollFirst().longValue() == OreStats.WASTE,
                 "window-cap-push");
+    }
+
+    static void testReachMathDistances() {
+        boolean inside = ReachMath.eyeToBox(0.5, 0.5, 0.5, 0, 0, 0) == 0.0;
+        boolean alongX = Math.abs(ReachMath.eyeToBox(5.0, 0.5, 0.5, 0, 0, 0) - 4.0) < 1e-9;
+        boolean diagonal = Math.abs(ReachMath.eyeToBox(2.0, 3.0, 2.0, 0, 0, 0)
+                - Math.sqrt(6.0)) < 1e-9;
+        boolean above = Math.abs(ReachMath.eyeToBox(0.5, 10.0, 0.5, 0, 0, 0) - 9.0) < 1e-9;
+        boolean corner = Math.abs(ReachMath.eyeToBox(2.0, 1.0, 2.0, 0, 0, 0)
+                - Math.sqrt(2.0)) < 1e-9;
+        ok(inside && alongX && diagonal && above && corner, "reach-math-distances");
+    }
+
+    static void testReachMathBreachBoundary() {
+        boolean atLimit = !ReachMath.isBreach(6.0, 4.5, 1.5);
+        boolean over = ReachMath.isBreach(6.01, 4.5, 1.5);
+        boolean near = !ReachMath.isBreach(4.8, 4.5, 1.5);
+        ok(atLimit && over && near, "reach-math-breach");
     }
 }

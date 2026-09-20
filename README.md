@@ -8,7 +8,7 @@ The project is under active development on a live server. Thresholds are tuned a
 
 ## Properties
 
-- 33 checks: movement 15, combat 8, player 10.
+- 34 checks: movement 15, combat 8, player 11.
 - Pure Bukkit API. No NMS and no packet libraries. A newer Minecraft version requires only a recompile against the matching paper-api.
 - Violation level system. Every check collects points, VL decays over time and punishment starts only above the configured threshold.
 - Graduated punishment: setback to legal ground, then kick. Thresholds live in `config.yml`.
