@@ -1,52 +1,33 @@
-# ============================================================
-#  FloppaAC 1.8.0 - konfiguracja
-#  VL = violation level. Kazdy check zbiera VL, ktore spada
-#  z czasem (decay). Kara dopiero po przekroczeniu progu.
-#  TRYB TESTOWY: kicki zamiast banow (ban-vl = 999999).
-#  Stabilny CPS 8-12 NIE flaguje. Flaga tylko przy nieludzkich
-#  wartosciach (20+ CPS, metronom ponizej 2 ms, serie <40 ms).
-# ============================================================
-
 prefix: "&8[&bFloppaAC&8]"
 
-# Co ile sekund VL gracza spada o 1 (0 = wylacz decay)
 vl-decay-seconds: 30
 
-# Ponizej tego TPS kontrole movement sa wstrzymane
 min-tps: 18.5
 
-# Gracze z pingiem powyzej tego dostaja luzniejsze progi
 high-ping: 220
 high-ping-leniency: 0.35
 
 alerts:
-  format: "&8[&bFloppaAC&8] &c%player% &7nie przeszedl &b%check% &8(VL: &c%vl%&8) &7ping: &e%ping% &7tps: &e%tps%"
+  format: "&8[&bFloppaAC&8] &c%player% &7failed &b%check% &8(VL: &c%vl%&8) &7ping: &e%ping% &7tps: &e%tps%"
   hover-details: true
-  # Kopia kazdej flagi BEZPOSREDNIO do testowanego gracza
   send-to-cheater: true
-  cheater-format: "&8[&bFloppaAC&8] &eWykryto: &b%check% &8(VL: &c%vl%&8) &7ping: &e%ping% &7tps: &e%tps%"
-  # Podejrzenia ponizej progu flagi (tryb verbose)
+  cheater-format: "&8[&bFloppaAC&8] &eDetected: &b%check% &8(VL: &c%vl%&8) &7ping: &e%ping% &7tps: &e%tps%"
   verbose-enabled: true
 
 punishments:
-  # Movement: najpierw cofniecie na legalny grunt, potem kick
   movement-setback-vl: 2
   movement-kick-vl: 12
   movement-ban-vl: 999999
-  # FakeLag: wlasny niski prog kicka, bo psuje gre innym od razu
   fakelag-kick-vl: 6
-  # Combat: szybciej, bo psuje gre innym
   combat-kick-vl: 8
   combat-ban-vl: 999999
-  # Player: scaffold, nuker, badpackets
   player-kick-vl: 10
   player-ban-vl: 999999
-  kick-command: "kick %player% FloppaAC: wykryto cheat (%check%)"
+  kick-command: "kick %player% FloppaAC: cheat detected (%check%)"
   ban-command: "ban %player% FloppaAC: cheat (%check%)"
 
-# Bezpiecznik lacza: kick przy skrajnie niestabilnym ruchu
 lagguard:
-  kick-command: "kick %player% FloppaAC: niestabilne polaczenie (lag)"
+  kick-command: "kick %player% FloppaAC: unstable connection (lag)"
 
 checks:
   FlyA: { enabled: true, max-vl: 30 }
@@ -81,6 +62,7 @@ checks:
   KillAuraH: { enabled: true, max-vl: 20 }
   KillAuraI: { enabled: true, max-vl: 20 }
   KillAuraJ: { enabled: true, max-vl: 20 }
+  KillAuraBot: { enabled: true, max-vl: 20 }
   MultiA: { enabled: true, max-vl: 20 }
   MultiB: { enabled: true, max-vl: 20 }
   AutoClickerA: { enabled: true, max-vl: 20 }
@@ -102,3 +84,4 @@ checks:
   InventoryB: { enabled: true, max-vl: 25 }
   InventoryC: { enabled: true, max-vl: 25 }
   LagGuard: { enabled: true, gap-ms: 900, max-gaps-per-minute: 6 }
+  XrayA: { enabled: true, max-vl: 25, window: 30, min-ores: 8, max-waste-per-ore: 1.2, los-streak: 4 }
