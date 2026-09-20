@@ -8,13 +8,6 @@ import pl.floppaac.check.CheckType;
 import pl.floppaac.data.PlayerData;
 import pl.floppaac.util.PingUtil;
 
-/**
- * LagGuard: ochrona przed naduzyciem FakeLag przez zalewanie.
- * Gdy lacze gracza gubi ruch na ponad 900 ms wiele razy w minute,
- * a serwer jest zdrowy, gracz dostaje kick za niestabilne polaczenie.
- * To NIE jest flaga cheata, tylko bezpiecznik jakosci lacza.
- * Domyslnie wlaczony, progi lzejsze niz wykrywanie FakeLag.
- */
 public class LagGuardCheck extends Check {
 
     public LagGuardCheck(FloppaAC plugin) {
@@ -31,7 +24,7 @@ public class LagGuardCheck extends Check {
         if (player.hasPermission("floppaac.bypass")) {
             return;
         }
-        // Jazda przez niezaladowane chunki rwie ruch legalnie.
+
         if (player.isInsideVehicle()) {
             return;
         }
@@ -40,8 +33,7 @@ public class LagGuardCheck extends Check {
         if (gapMs < threshold) {
             return;
         }
-        // Cheater z rosnacym VL FakeLag idzie sciezka cheata, nie lagi.
-        // Takze swieze wykrycie (30 s) wylacza bezpiecznik: luka to choke.
+
         if (data.getVl("FakeLagA") + data.getVl("FakeLagB")
                 + data.getVl("FakeLagC") >= 2
                 || System.currentTimeMillis() - data.lastFakeLagMs < 30000L) {
@@ -53,7 +45,7 @@ public class LagGuardCheck extends Check {
         }
         int ping = PingUtil.getPing(player, data);
         if (ping > 400) {
-            // Bardzo wysoki ping to juz inna historia, nie karzemy podwojnie.
+
             return;
         }
         long now = System.currentTimeMillis();

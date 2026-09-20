@@ -8,13 +8,6 @@ import pl.floppaac.check.Check;
 import pl.floppaac.check.CheckType;
 import pl.floppaac.data.PlayerData;
 
-/**
- * InventoryA: ChestStealer, ponad 12 klikow na s w ekwipunku.
- * InventoryB: akcje walki i sprintu z otwartym GUI.
- * Legalny klient zamyka GUI przed atakiem (Close Window idzie pierwsze),
- * a sprint z otwartym GUI jest niemozliwy. Atak z otwartym GUI w serii 2
- * oraz sprint z GUI w serii 5 to sygnaly.
- */
 public class InventoryCheck extends Check {
 
     public InventoryCheck(FloppaAC plugin) {
@@ -53,13 +46,6 @@ public class InventoryCheck extends Check {
         }
     }
 
-    /**
-     * InventoryC: obrazenia z otwartego ekwipunku (InventoryWalk).
-     * Legalny klient zamyka GUI przed atakiem, wiec kazde trafienie
-     * z otwartym GUI to pakietowy multiaction. Flaga od pierwszego
-     * ciosu, listener anulowuje obrazenia (ghost trafienia).
-     * @return true gdy trafienie poszlo z otwartego GUI
-     */
     public boolean handleDamage(Player attacker, PlayerData data) {
         if (!data.invOpen) {
             return false;
@@ -78,8 +64,7 @@ public class InventoryCheck extends Check {
             data.invMoveStreak = 0;
             return;
         }
-        // Obrot kamery z otwartym GUI (jak InventoryMove u Hawka).
-        // W vanilla mysz obsluguje kursor, kamera stoi.
+
         boolean rotated = from.getYaw() != to.getYaw() || from.getPitch() != to.getPitch();
         if (rotated && !data.movementExempt()) {
             data.invMoveStreak++;

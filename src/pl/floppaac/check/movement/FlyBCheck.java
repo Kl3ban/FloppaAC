@@ -9,7 +9,6 @@ import pl.floppaac.data.PlayerData;
 import pl.floppaac.util.MoveUtil;
 import pl.floppaac.util.PingUtil;
 
-/** FlyB: zawis w powietrzu bez opadania (typowy hover fly). */
 public class FlyBCheck extends Check {
 
     public FlyBCheck(FloppaAC plugin) {
@@ -19,14 +18,12 @@ public class FlyBCheck extends Check {
     public void handle(Player player, PlayerData data, Location from, Location to,
                        double dy, double horizontal) {
         if (data.movementExempt()) {
-            // Karencja po naszym pushbacku NIE zeruje serii: reset
-            // dawal cheaterowi nieskonczone okno bez flagi.
+
             return;
         }
 
         if (data.velocityExempt(player, System.currentTimeMillis())) {
-            // Odrzut (zombie, strzala, TNT): grawitacja legalnie zaburzona
-            // przez ticki odbicia - nie oceniamy ich.
+
             return;
         }
         if (MoveUtil.canFly(player) || MoveUtil.inVehicle(player)

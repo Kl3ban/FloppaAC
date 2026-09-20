@@ -8,14 +8,6 @@ import pl.floppaac.check.CheckType;
 import pl.floppaac.data.PlayerData;
 import pl.floppaac.util.MoveUtil;
 
-/**
- * FlyC: lot slizgowy w dol (glide).
- * Vanilla spadek przyspiesza do okolo 3.9 na tick. Utrzymywane
- * opadanie 0.03 do 0.6 na tick z ruchem poziomym przez 15 tickow
- * to cheat glide (tryb Vanilla z FlyGeneric leci tak w dol).
- * Zwolnienia: woda, pajeczyna, drabiny, pojazd, lot, elytra,
- * mikstura Slow Falling i Levitation, blok miodu.
- */
 public class FlyGlideCheck extends Check {
 
     public FlyGlideCheck(FloppaAC plugin) {
@@ -24,13 +16,12 @@ public class FlyGlideCheck extends Check {
 
     public void handle(Player player, PlayerData data, double dy, double horizontal) {
         if (data.movementExempt()) {
-            // Karencja po naszym pushbacku NIE zeruje serii.
+
             return;
         }
 
         if (data.velocityExempt(player, System.currentTimeMillis())) {
-            // Odrzut (zombie, strzala, TNT): grawitacja legalnie zaburzona
-            // przez ticki odbicia - nie oceniamy ich.
+
             return;
         }
         if (MoveUtil.canFly(player) || MoveUtil.inVehicle(player)

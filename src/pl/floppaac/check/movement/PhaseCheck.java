@@ -7,11 +7,6 @@ import pl.floppaac.check.Check;
 import pl.floppaac.check.CheckType;
 import pl.floppaac.data.PlayerData;
 
-/**
- * PhaseA: przejscie przez pelny blok.
- * Oba konce ruchu w srodku solidnego bloku i dystans powyzej
- * 0.3 bloku. Wymagana seria 2 zeby krawedzie chunkow nie flagowaly.
- */
 public class PhaseCheck extends Check {
 
     public PhaseCheck(FloppaAC plugin) {
@@ -36,8 +31,7 @@ public class PhaseCheck extends Check {
             phaseHit(player, data, to.getBlock().getType().name(), dist);
             return;
         }
-        // Przelot powietrze-powietrze przez solidny srodek (NcpClip).
-        // Sprint daje max okolo 0.4 na tick, wiec prog 0.5 jest bezpieczny.
+
         if (!fromSolid && !toSolid && dist > 0.5) {
             Location mid = from.clone().add(to.clone().subtract(from).multiply(0.5));
             if (mid.getBlock().getType().isSolid()

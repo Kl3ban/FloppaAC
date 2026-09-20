@@ -8,13 +8,6 @@ import pl.floppaac.check.CheckType;
 import pl.floppaac.data.PlayerData;
 import pl.floppaac.util.MoveUtil;
 
-/**
- * SprintA: sprint do tylu (omnisprint).
- * Vanilla sprint wymaga biegu do przodu. Sprint ze strafem bocznym
- * albo cofaniem z pelna predkoscia to cheat. Kat miedzy kierunkiem
- * ruchu a wzrokiem powyzej 120 stopni w serii 5.
- * Odrzut po ciosie (awaitingVelocity) zwalnia, bo pcha do tylu.
- */
 public class SprintSpoofCheck extends Check {
 
     public SprintSpoofCheck(FloppaAC plugin) {
@@ -26,7 +19,7 @@ public class SprintSpoofCheck extends Check {
         if (data.movementExempt() || MoveUtil.canFly(player) || MoveUtil.inVehicle(player)
                 || MoveUtil.inLiquid(player)
                 || data.velocityExempt(player, System.currentTimeMillis())) {
-            // velocityExempt: odrzut legalnie pcha do tylu i na boki.
+
             data.sprintStreak = 0;
             return;
         }
@@ -59,14 +52,6 @@ public class SprintSpoofCheck extends Check {
         }
     }
 
-    /**
-     * Stany sprintu jak u Grima, seria zamiast pierwszego ticku.
-     * SprintB: sprint przy glodzie 6 lub mniej. Vanilla blokuje sprint
-     * ponizej 7, wiec dluzsza seria to cheat. Seria 5.
-     * SprintD: sprint w locie na elytrze. Vanilla sprint gasi. Seria 5.
-     * SprintE: sprint w pelnym zanurzeniu (stopy i oczy w wodzie,
-     * bez pływania powierzchniowego). Vanilla sprint gasi. Seria 8.
-     */
     public void handleStates(Player player, PlayerData data) {
         if (data.movementExempt() || MoveUtil.inVehicle(player)) {
             data.hungerStreak = 0;
@@ -112,11 +97,6 @@ public class SprintSpoofCheck extends Check {
         }
     }
 
-    /**
-     * SprintC: start sprintu ze slepota (jak SprintD u Grima).
-     * Legalny klient nie wysyla startu sprintu w ciemnosci.
-     * Seria 2 na wypadek desyncu efektu.
-     */
     public void handleSprintStart(Player player, PlayerData data) {
         if (data.movementExempt() || MoveUtil.inVehicle(player)) {
             return;

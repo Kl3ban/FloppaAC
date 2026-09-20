@@ -8,18 +8,6 @@ import pl.floppaac.check.CheckType;
 import pl.floppaac.data.PlayerData;
 import pl.floppaac.util.MoveUtil;
 
-/**
- * SpiderA: wspinanie sie po scianie bez drabiny. Przeprojektowane:
- * dwa niezalezne sygnaly, oba wymagaja ciaglego wznoszenia przy
- * pelnej swobodzie ruchu (bez tarczy, bez kucania, bez drabiny,
- * bez wody). Legalny gracz przy scianie ZAWSZE opada, wiec kazdy
- * ciagly wznos to cheat - pytanie tylko o czas okna.
- * SpiderWall: wznoszenie przy blokujacej scianie (dotyk pudelka
- * w 6 kierunkach), 12 tickow z rzedu (0,6 s). Kucanie/tarcza zeruja:
- * wolne pietrzenie przy scianie to legalna mechanika.
- * SpiderAir: wznoszenie w przestrzeni otwartej, 8 tickow.
- * Niezaleznie od poziomej predkosci (Jetpack i wieza maja predkosc).
- */
 public class SpiderCheck extends Check {
 
     public SpiderCheck(FloppaAC plugin) {
@@ -42,8 +30,7 @@ public class SpiderCheck extends Check {
             data.spiderAirStreak = Math.max(0, data.spiderAirStreak - 1);
             return;
         }
-        // Wolne pietrzenie przy scianie z tarcza/kucaniem to legalna
-        // mechanika vanilla (skok przy blokujacej tarczy). Zeruje serie.
+
         if (player.isSneaking() || isBlocking(player)) {
             data.spiderWallStreak = 0;
             data.spiderAirStreak = 0;
@@ -73,7 +60,6 @@ public class SpiderCheck extends Check {
         }
     }
 
-    /** Czy przed graczem stoi blokujacy blok (pudelko pelne, 6 kierunkow). */
     private boolean wallAhead(Player player) {
         org.bukkit.Location base = player.getLocation();
         int[][] dirs = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}, {1, 1}, {-1, -1}, {1, -1}, {-1, 1}};

@@ -8,11 +8,6 @@ import pl.floppaac.check.Check;
 import pl.floppaac.check.CheckType;
 import pl.floppaac.data.PlayerData;
 
-/**
- * NukerA: 3 bloki nie instant w 100 ms.
- * Wlasna kolejka nukeTimes, niezalezna od FastBreak
- * (FastBreak czysci swoja kolejke przy fladze).
- */
 public class NukerCheck extends Check {
 
     public NukerCheck(FloppaAC plugin) {

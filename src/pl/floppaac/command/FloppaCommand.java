@@ -17,11 +17,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * /floppaac alerts | verbose | vl [gracz] | clear &lt;gracz&gt; | reload | status | debug [gracz].
- * Narzedzia testera: verbose pokazuje podejrzenia ponizej progu,
- * status pokazuje stan silnika, debug pokazuje telemetrie gracza.
- */
 public class FloppaCommand implements CommandExecutor, TabCompleter {
 
     private final FloppaAC plugin;

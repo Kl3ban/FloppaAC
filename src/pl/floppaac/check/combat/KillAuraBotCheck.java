@@ -21,17 +21,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-/**
- * KillAuraBot: weryfikacja botem NPC w stylu Matrix.
- * Heurystyki katow i rotacji lapia tez utalentowanych graczy
- * z nienaturalnymi flickami, wiec nie podejmuja decyzji o karze.
- * Gdy suma VL aury (A-J) dojdzie do progu, niewidzialny cichy
- * mieszkaniec orbituje wokol podejrzanego przez 15 s. Legalny
- * gracz nie trafia w puste powietrze. Dwa trafienia w bota
- * to potwierdzenie KillAury i natychmiastowy kick. Pusty
- * przebieg obniza VL aury, wiec falszywe podejrzenie gasnie
- * zamiast prowadzic do kary.
- */
 public class KillAuraBotCheck extends Check {
 
     private static final String[] AURA_VL = {
@@ -39,7 +28,6 @@ public class KillAuraBotCheck extends Check {
         "KillAuraF", "KillAuraG", "KillAuraH", "KillAuraI", "KillAuraJ"
     };
 
-    /** Ilu podejrzanych naraz moze miec aktywnego bota. */
     private static final int MAX_ACTIVE = 3;
 
     private final Map<UUID, Verification> active =
@@ -51,7 +39,6 @@ public class KillAuraBotCheck extends Check {
         super(plugin, "KillAuraBot", CheckType.COMBAT);
     }
 
-    /** Suma VL heurystyk aury podejrzanego. */
     public static int auraVl(PlayerData data) {
         int sum = 0;
         for (String name : AURA_VL) {
@@ -60,10 +47,6 @@ public class KillAuraBotCheck extends Check {
         return sum;
     }
 
-    /**
-     * Wywolywane po serii atakow. Startuje bota, gdy podejrzenie
-     * dojrzalo, atak jest swiezy i minal cooldown.
-     */
     public void maybeVerify(Player suspect, PlayerData data) {
         if (!isEnabled()) {
             return;
@@ -119,13 +102,13 @@ public class KillAuraBotCheck extends Check {
             try {
                 raw.remove();
             } catch (Exception e) {
-                // Ignorowane.
+
             }
             try {
                 plugin.getLogger().warning("[Verify] Failed to spawn villager for "
                         + suspect.getName());
             } catch (Exception e) {
-                // Ignorowane.
+
             }
             return;
         }
@@ -146,13 +129,13 @@ public class KillAuraBotCheck extends Check {
             try {
                 bot.remove();
             } catch (Exception ex) {
-                // Ignorowane.
+
             }
             try {
                 plugin.getLogger().warning("[Verify] Bot configuration failed for "
                         + suspect.getName() + ": " + e);
             } catch (Exception ex) {
-                // Ignorowane.
+
             }
             return;
         }
@@ -171,17 +154,13 @@ public class KillAuraBotCheck extends Check {
         }
     }
 
-    /**
-     * Trafienie w bota. Zwraca true, gdy ofiara jest botem
-     * (listener anuluje obrazenia). Liczy tylko ciosy podejrzanego.
-     */
     public boolean handleBotHit(Player attacker, LivingEntity botEntity) {
         UUID suspect = botToSuspect.get(botEntity.getUniqueId());
         if (suspect == null) {
             return false;
         }
         if (!attacker.getUniqueId().equals(suspect)) {
-            // Cudzy bot: sama ochrona, bez liczenia.
+
             return true;
         }
         Verification v = active.get(suspect);
@@ -204,25 +183,19 @@ public class KillAuraBotCheck extends Check {
         return true;
     }
 
-    /** Czy encja jest aktywnym botem weryfikacyjnym. */
     public boolean isBot(UUID entityUuid) {
         return botToSuspect.containsKey(entityUuid);
     }
 
-    /** Koniec bez kary: wyjscie, smierc, teleport, zmiana trybu. */
     public void cancel(UUID suspect) {
         endSilent(suspect);
     }
 
-    /**
-     * Ogłoszenie weryfikacji dla ekipy i konsoli. Podejrzany nie
-     * dostaje nic, zeby cheater nie wylaczyl aury na czas testu.
-     */
     private void announceStaff(Player suspect, String text) {
         try {
             plugin.getLogger().info("[Verify] " + suspect.getName() + ": " + text);
         } catch (Exception e) {
-            // Ignorowane.
+
         }
         try {
             for (Player p : Bukkit.getOnlinePlayers()) {
@@ -232,11 +205,11 @@ public class KillAuraBotCheck extends Check {
                                 suspect.getName() + ": " + text);
                     }
                 } catch (Exception e) {
-                    // Ignorowane.
+
                 }
             }
         } catch (Exception e) {
-            // Ignorowane.
+
         }
     }
 
@@ -250,14 +223,14 @@ public class KillAuraBotCheck extends Check {
                 v.task.cancel();
             }
         } catch (Exception e) {
-            // Ignorowane.
+
         }
         for (Map.Entry<UUID, UUID> e : botToSuspect.entrySet()) {
             if (e.getValue().equals(suspect)) {
                 botToSuspect.remove(e.getKey());
             }
         }
-        // Szukanie we wszystkich swiatach.
+
         try {
             for (org.bukkit.World w : Bukkit.getWorlds()) {
                 for (Entity ent : w.getEntities()) {
@@ -267,11 +240,10 @@ public class KillAuraBotCheck extends Check {
                 }
             }
         } catch (Exception e) {
-            // Ignorowane.
+
         }
     }
 
-    /** Wygasniecie bez potwierdzenia: podejrzenie opada o 2 VL. */
     private void expire(UUID suspect) {
         Verification v = active.get(suspect);
         PlayerData data = null;
@@ -291,7 +263,7 @@ public class KillAuraBotCheck extends Check {
                 plugin.getLogger().info("[Verify] Verification clean, player offline.");
             }
         } catch (Exception e) {
-            // Ignorowane.
+
         }
         if (data != null) {
             for (String name : AURA_VL) {
@@ -310,7 +282,7 @@ public class KillAuraBotCheck extends Check {
                 Math.cos(angle) * VerifyMath.ORBIT_RADIUS,
                 1.3,
                 Math.sin(angle) * VerifyMath.ORBIT_RADIUS);
-        // Bot nie moze utknac w pelnym bloku.
+
         for (int i = 0; i < 2; i++) {
             try {
                 if (pos.getBlock().getType().isSolid()
@@ -387,7 +359,7 @@ public class KillAuraBotCheck extends Check {
             try {
                 bot.teleport(orbitPos(suspect.getLocation(), v.step));
             } catch (Exception e) {
-                // Kolejny tick sprobuje ponownie.
+
             }
         }
     }

@@ -7,11 +7,6 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
 
-/**
- * Stale fizyki Minecrafta i wspolne exemptiony.
- * Wartosci z klienta: walk 0.21585, sprint 0.2806,
- * jump 0.42, gravity 0.08, drag 0.98.
- */
 public final class MoveUtil {
 
     public static final double WALK_SPEED = 0.21585;
@@ -46,7 +41,7 @@ public final class MoveUtil {
         if (isClimbable(p.getLocation().getBlock().getType().name())) {
             return true;
         }
-        // Na krawedzi drabiny stopy bywaja w powietrzu, klatka na drabinie.
+
         return isClimbable(p.getEyeLocation().getBlock().getType().name());
     }
 
@@ -59,7 +54,6 @@ public final class MoveUtil {
         return n.contains("ICE");
     }
 
-    /** Chunk niezaladowany to teren-widmo, nie grunt. */
     public static boolean inUnloadedChunk(Location loc) {
         try {
             return !loc.getWorld().isChunkLoaded(loc.getBlockX() >> 4, loc.getBlockZ() >> 4);
@@ -68,11 +62,6 @@ public final class MoveUtil {
         }
     }
 
-    /**
-     * Czy pod stopami (do okolo 1.5 bloku) jest realny blok.
-     * Uzywane przez NoFall do odrzucenia fake-gruntu deklarowanego
-     * pakietowo w powietrzu.
-     */
     public static boolean hasSolidBelow(Location loc) {
         int x = loc.getBlockX();
         int z = loc.getBlockZ();
@@ -91,7 +80,6 @@ public final class MoveUtil {
         return n.contains("SLIME");
     }
 
-    /** Miod przykleja i spowalnia (drift poziomy i pionowy). */
     public static boolean onHoney(Player p) {
         String n = p.getLocation().getBlock().getRelative(BlockFace.DOWN).getType().name();
         if (n.contains("HONEY")) {
@@ -101,17 +89,11 @@ public final class MoveUtil {
         return in.contains("HONEY");
     }
 
-    /** Puder sniezny: wolne toniecie bez obrazen od upadku. */
     public static boolean inPowderSnow(Player p) {
         String n = p.getLocation().getBlock().getType().name();
         return n.contains("POWDER_SNOW");
     }
 
-    /**
-     * Kolumna babelowa: legalny pionowy ciag w gore/dol w wodzie.
-     * Stala kolumna rozpoznajemy po blokach zrodlowych pod graczem:
-     * magma (ciag w dol) albo soul sand (ciag w gore).
-     */
     public static boolean inBubbleColumn(Player p) {
         String n = p.getLocation().getBlock().getType().name();
         if (n.contains("BUBBLE")) {
@@ -121,11 +103,6 @@ public final class MoveUtil {
         return below.contains("MAGMA") || below.contains("SOUL_SAND");
     }
 
-    /**
-     * Piston obok gracza pcha legalnie (czesc sciezek nie generuje
-     * PlayerVelocityEvent) - exemption dla checkow ruchu.
-     * Skan 3x3x3 wokol stopy; wywolywany tylko przy podejrzeniu.
-     */
     public static boolean nearPiston(Location loc) {
         int x = loc.getBlockX();
         int y = loc.getBlockY();
@@ -143,7 +120,6 @@ public final class MoveUtil {
         return false;
     }
 
-    /** Efekt Slow Falling znosi obrazenia od upadku. */
     public static boolean hasSlowFalling(Player p) {
         try {
             return p.hasPotionEffect(org.bukkit.potion.PotionEffectType.SLOW_FALLING);
@@ -189,7 +165,6 @@ public final class MoveUtil {
         return 0;
     }
 
-    /** Czy gracz ma lewitacje (Shulker unosi legalnie). */
     public static boolean hasLevitation(Player p) {
         try {
             PotionEffectType type = PotionEffectType.getByName("LEVITATION");
@@ -202,7 +177,6 @@ public final class MoveUtil {
         return false;
     }
 
-    /** Maksymalny poziomy dystans na tick dla gracza z bonusami. */
     public static double maxHorizontal(Player p, double baseWalk,
                                        double baseSprint, double potionBonus) {
         double base = p.isSprinting() ? baseSprint : baseWalk;

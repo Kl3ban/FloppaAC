@@ -1,30 +1,17 @@
-# FloppaAC ROADMAP (post-1.1.0)
+# FloppaAC Roadmap
 
-## Lesson from Grim (GrimAnticheat/Grim, check structure)
+## Reference structure
 
-Grim splits checks into: combat (Reach), groundspoof, movement,
-prediction (OffsetHandler, tick-by-tick movement simulation),
-scaffolding, velocity. Grim's strength is packet prediction:
-it simulates player movement and compares it against packets
-instead of plain thresholds.
+GrimAnticheat separates combat, groundspoof, movement, prediction and scaffolding. Its strength is packet prediction: it simulates player movement and compares the result with the packets instead of applying plain thresholds.
 
-## What makes sense for FloppaAC without breaking the zero-dependency rule
+## Planned work inside the zero dependency rule
 
-1. GroundSpoofA: flag onGround from the packet vs real ground under the feet.
-   Bukkit gives player.isOnGround() from the client plus the block below.
-   A mismatch in a long streak is classic groundspoof. Low cost.
-2. SprintSpoof / OmniSprint: sprinting sideways and backwards without
-   slowdown. The server sees movement direction and the sprint flag.
-   Rule: sprint + strafe or backwards movement at full speed in a streak.
-3. Better Reach: account for target interpolation (target speed adds
-   leniency only when the target is running) instead of a flat threshold.
-4. FakeLag statistics: a per-player gap histogram in the debug command,
-   so the tester can see the distribution and tune thresholds.
+1. GroundSpoofA hardening: compare the packet ground flag with the real block under the feet. A long mismatch streak is classic groundspoof at low cost.
+2. Sprint spoof: sprinting sideways or backwards at full speed without slowdown. The server sees movement direction and the sprint flag, a streak is the signature.
+3. Reach refinement: account for target interpolation. Target speed adds leniency only when the target is running, instead of a flat threshold.
+4. FakeLag statistics: a per player gap histogram in the debug command so the tester can see the distribution and tune thresholds.
 
-## What we do NOT do without a conscious decision
+## Rejected without a conscious decision
 
-- PacketEvents and transaction tracking: gives packet ping and ordering,
-  but breaks the zero-dependency rule and easy installation. Possibly
-  a separate FloppaAC-Packets module, never the core.
-- Decoy bots and telemetry-driven setbacks: risk of false positives and
-  player deaths; only with tester approval after an observation phase.
+- packetevents and transaction tracking: packet ping and ordering, at the cost of the zero dependency rule and simple installation. A separate FloppaAC-Packets module is possible, never the core.
+- decoy bots and telemetry driven setbacks: false positive risk and player deaths. Only with tester approval after an observation phase.

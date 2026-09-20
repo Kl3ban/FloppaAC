@@ -1,9 +1,5 @@
 package pl.floppaac.util;
 
-/**
- * Mierzy TPS serwera. Wywolywane co tick z schedulera.
- * TPS 20 oznacza idealne 50 ms na tick.
- */
 public class TpsMonitor implements Runnable {
 
     private long lastTime = -1L;
@@ -25,7 +21,6 @@ public class TpsMonitor implements Runnable {
         lastTime = now;
     }
 
-    /** Aktualne TPS w zakresie 0 do 20. */
     public double getTps() {
         if (lastTime != -1L && System.nanoTime() - lastTime > 1000000000L) {
             return 0.0;

@@ -11,14 +11,6 @@ import pl.floppaac.data.PlayerData;
 import pl.floppaac.util.DigTime;
 import pl.floppaac.util.MoveUtil;
 
-/**
- * FastBreakA: kopanie szybciej niz pozwala narzedzie.
- * Bloki instant (trawa, kwiaty, pochodnie, dywany, sadzonki,
- * szyny, pnacza) maja osobny wysoki limit i nigdy nie sa
- * weryfikowane czasem. Reszta ma limit tempa.
- * Historia: incydent z flagowaniem trawy jest tu niemozliwy,
- * bo tier INSTANT jest odfiltrowany przed liczeniem.
- */
 public class FastBreakCheck extends Check {
 
     public FastBreakCheck(FloppaAC plugin) {
@@ -49,7 +41,6 @@ public class FastBreakCheck extends Check {
         }
     }
 
-    /** Start kopania (BlockDamageEvent). */
     public void onDigStart(Player player, PlayerData data, Block block) {
         if (player.getGameMode() == GameMode.CREATIVE || isInstant(block.getType())) {
             return;
@@ -65,13 +56,6 @@ public class FastBreakCheck extends Check {
         }
     }
 
-    /**
-     * FastBreakB: kopanie szybsze niz pozwala dolne oszacowanie vanilla.
-     * Model liczy narzedzie, Efficiency, Haste, powietrze i wode.
-     * Zawsze zaklada wlasciwe narzedzie, wiec legalne kopanie jest
-     * wolniejsze albo rowne. Flaga ponizej 45 procent w serii 3.
-     * Niezniszczalne (bedrock) lamane w survival to natychmiastowa flaga.
-     */
     private void handleInstantHard(Player player, PlayerData data, Block broken) {
         if (data.digStartMs == 0L) {
             return;
@@ -97,7 +81,7 @@ public class FastBreakCheck extends Check {
             data.fastBreakBStreak++;
             if (data.fastBreakBStreak >= 3) {
                 flagAs("FastBreakB", player, data, String.format(
-                        "%s %d/%d tickow x%d", broken.getType().name(),
+                        "%s %d/%d ticks x%d", broken.getType().name(),
                         tookTicks, expected, data.fastBreakBStreak));
                 data.fastBreakBStreak = 0;
             }
@@ -170,7 +154,6 @@ public class FastBreakCheck extends Check {
         return false;
     }
 
-    /** Bloki lamane jednym uderzeniem. Nigdy nie flaguja. */
     public static boolean isInstant(Material m) {
         String n = m.name();
         return n.contains("GRASS")

@@ -1,26 +1,14 @@
 package pl.floppaac.util;
 
-/**
- * Czysty model czasu kopania vanilla. Testowalny bez serwera.
- *
- * Vanilla: obrazenia na tick = speed / hardness / 30 przy wlasciwym
- * narzedziu, ticki = ceil(30 * hardness / speed).
- * speed = baza materialu + (eff^2 + 1) za Efficiency, razy Haste
- * (1 + 0.2 za poziom), dzielone przez 5 w powietrzu i pod woda
- * bez Aqua Affinity. Zawsze zakladamy wlasciwe narzedzie, wiec
- * wynik to DOLNE oszacowanie: legalne kopanie jest wolniejsze
- * albo rowne, nigdy szybsze. Flaga tylko ponizej 45 procent.
- */
 public final class DigTime {
 
     private DigTime() {
     }
 
-    /** Baza predkosci materialu narzedzia trzymanego w rece. */
     public static double toolSpeed(String itemName, String blockName) {
         String item = itemName == null ? "" : itemName.toUpperCase();
         String block = blockName == null ? "" : blockName.toUpperCase();
-        // Pajeczyna tnie sie mieczem 15x.
+
         if (block.contains("WEB") && item.contains("SWORD")) {
             return 15.0;
         }
@@ -47,10 +35,6 @@ public final class DigTime {
         return 1.0;
     }
 
-    /**
-     * Oczekiwane ticki kopania (dolne oszacowanie).
-     * @param hardness twardosc bloku (ujemna = niezniszczalny)
-     */
     public static long expectedTicks(double hardness, double toolSpeed,
                                      int efficiency, int haste,
                                      boolean airborne, boolean water, boolean aqua) {
@@ -71,7 +55,6 @@ public final class DigTime {
         return (long) Math.ceil(30.0 * hardness / speed);
     }
 
-    /** Czy czas jest niemozliwy (ponizej 45 procent dolnego oszacowania). */
     public static boolean isImpossible(long tookTicks, long expectedTicks) {
         if (expectedTicks == Long.MAX_VALUE) {
             return tookTicks != Long.MAX_VALUE;

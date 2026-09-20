@@ -1,18 +1,14 @@
-# Build artifacts
 classes/
 test-classes/
 *.class
 
-# Jar artifacts and external libraries (Paper API etc.) - not in repo
 *.jar
 
-# Generated source list used by the build
 sources.txt
 
-# Local build script (machine-specific paths) - not in repo
 build.cmd
+test.cmd
 stub-classes/
 
-# System junk
 Thumbs.db
 .DS_Store

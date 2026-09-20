@@ -13,14 +13,6 @@ import pl.floppaac.util.PingUtil;
 
 import java.util.HashSet;
 
-/**
- * KillAura: trzy sygnaly.
- * AuraA: trafienie bez patrzenia na cel (kat powyzej 55 stopni).
- * AuraB: multi-target, wiecej niz 6 roznych encji na s.
- * AuraC: aura liniowa (LiquidBounce Linear): rotacja idzie stalymi
- * malymi krokami do celu z niska wariancja i wysoka celnoscia.
- * Legalne flicki maja duza wariancje i pudluja, wiec ich nie lapie.
- */
 public class KillAuraCheck extends Check {
 
     public KillAuraCheck(FloppaAC plugin) {
@@ -101,10 +93,6 @@ public class KillAuraCheck extends Check {
         }
     }
 
-    /**
-     * Aura liniowa. Wywolywane przy trafieniu z aktualnym yaw i pitch.
-     * @param aimError blad celowania w stopniach (0 idealnie w cel)
-     */
     public void handleLinear(Player attacker, PlayerData data,
                              float yaw, float pitch, double aimError) {
         if (data.movementExempt() || data.invOpen
@@ -141,11 +129,6 @@ public class KillAuraCheck extends Check {
         }
     }
 
-    /**
-     * KillAuraD: cios bez rotacji w ruszajacy sie cel (silent aim).
-     * Cel przesuniety o ponad 0.5 bloku wymaga korekty celowania.
-     * Trzy takie ciosy z rzedu przy dystansie powyzej 2 bloki to sygnal.
-     */
     public void handleNoRotation(Player attacker, PlayerData data, LivingEntity victim) {
         if (data.movementExempt() || data.invOpen
                 || data.velocityExempt(attacker, System.currentTimeMillis())) {
@@ -181,7 +164,7 @@ public class KillAuraCheck extends Check {
         if (!sameVictim) {
             return;
         }
-        // Teleport ofiary to nie strafe.
+
         if (victimMoved > 8.0) {
             data.noRotStreak = 0;
             return;
@@ -198,12 +181,6 @@ public class KillAuraCheck extends Check {
         }
     }
 
-    /**
-     * KillAuraE: cios bez machniecia reka.
-     * Legalny klient zawsze wysyla ArmSwing z atakiem. Atak, po ktorym
-     * przez sekunde nie bylo zadnego machniecia, to pakietowa aura.
-     * Bez bazy (gracz nigdy nie machnal) check wstrzymuje sie.
-     */
     public void handleNoSwing(Player attacker, PlayerData data) {
         if (data.movementExempt() || data.invOpen) {
             data.noSwingStrikes = 0;
@@ -214,9 +191,7 @@ public class KillAuraCheck extends Check {
         }
         long sinceSwing = System.currentTimeMillis() - data.lastSwingMs;
         if (sinceSwing > 1000L) {
-            // Pojedynczy cios bez pary to czesto kolejnosc w burście
-            // (atak przed machnieciem). Flaga dopiero w serii 4.
-            // Pare atak-machniecie w 750 ms zeruje licznik w onSwing.
+
             data.noSwingStrikes++;
             if (data.noSwingStrikes >= 4) {
                 signalAs("KillAuraE", attacker, data, "attack " + sinceSwing
@@ -228,12 +203,6 @@ public class KillAuraCheck extends Check {
         }
     }
 
-    /**
-     * KillAuraF: krawedz cooldownu.
-     * Aura bije dokladnie w momencie pelnego naladowania (1.9+):
-     * 18 z 20 ciosow na pelnym cooldownzie z metronomowa regularnoscia
-     * odstepow to nie czlowiek. Ludzie mieszaja ciosy pelne i slabe.
-     */
     public void handleCharge(Player attacker, PlayerData data) {
         if (data.movementExempt() || data.invOpen) {
             return;
@@ -263,12 +232,6 @@ public class KillAuraCheck extends Check {
         }
     }
 
-    /**
-     * KillAuraG: orbita.
-     * Aura trzyma ofiare w waskim pasku maksymalnego zasiegu.
-     * 8 trafien z rzedu w pasmie 0.4 bloku w ruchu to nie czlowiek,
-     * ludzie dystans ciagna i gubia.
-     */
     public void handleOrbit(Player attacker, PlayerData data,
                             LivingEntity victim, double dist) {
         if (data.movementExempt() || data.invOpen
@@ -301,11 +264,6 @@ public class KillAuraCheck extends Check {
         }
     }
 
-    /**
-     * KillAuraH: cios bez linii wzroku (aura przez sciane).
-     * Promien z oczu atakujacego musi trafic w ofiare. Trafienia
-     * przez pelna sciane to pakietowa aura. Seria 3.
-     */
     public void handleLineOfSight(Player attacker, PlayerData data, LivingEntity victim) {
         if (data.movementExempt() || data.invOpen
                 || data.velocityExempt(attacker, System.currentTimeMillis())) {
@@ -330,14 +288,6 @@ public class KillAuraCheck extends Check {
         }
     }
 
-    /**
-     * KillAuraI: konwergencja rotacji (smooth aim). Matematyczny
-     * wygladzacz zbliza sie do celu wykladniczo: stosunek obrotu
-     * do pozostalego bledu jest trafienie w trafienie staly.
-     * Czlowiek mierzy bledem i predkoscia niezaleznie - rozrzut
-     * ogromny. Wymaga realnego bledu (aura dogania cel) i realnego
-     * obrotu, wiec stanie na celowniku nie flaguje.
-     */
     public void handleReactive(Player attacker, PlayerData data,
                                LivingEntity victim, long now) {
         if (data.movementExempt() || data.invOpen
@@ -432,7 +382,6 @@ public class KillAuraCheck extends Check {
         return Math.sqrt(acc / (double) q.size());
     }
 
-    /** Blad celowania w stopniach miedzy wzrokiem a srodkiem celu. */
     public static double aimError(Player attacker, LivingEntity victim) {
         Location eye = attacker.getEyeLocation();
         Vector look = eye.getDirection();

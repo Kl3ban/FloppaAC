@@ -7,13 +7,6 @@ import pl.floppaac.check.Check;
 import pl.floppaac.check.CheckType;
 import pl.floppaac.data.PlayerData;
 
-/**
- * AutoTrapA: automatyczne zabudowywanie przeciwnika boxem.
- * Sygnatura: solidny blok postawiony w boksie wokol ZYWEJ istoty
- * (6 pionow wokol celu: N/S/E/W na poziomie stopy i glowy plus
- * nad glowa), 8+ w 3 sekundy. Czlowiek buduje pukszaltke na gruncie;
- * dokladanie blokow bezposrednio przy glowie celu to skrypt.
- */
 public class AutoTrapCheck extends Check {
 
     public AutoTrapCheck(FloppaAC plugin) {

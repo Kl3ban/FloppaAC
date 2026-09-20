@@ -7,14 +7,6 @@ import pl.floppaac.check.CheckType;
 import pl.floppaac.data.PlayerData;
 import pl.floppaac.util.ClickStats;
 
-/**
- * AutoClickerA: FloppaAC celowo NIE flaguje stabilnego CPS.
- * Utalentowany gracz moze trzymac rowne 8 do 12 CPS przez 5 s.
- * Flaga tylko przy wartosciach nieludzkich:
- * 1) ponad 20 trafien na s,
- * 2) metronom ekstremalny: 30 probek, ponad 10 CPS i stddev ponizej 2 ms,
- * 3) seria 3 podwojnych trafien ponizej 40 ms.
- */
 public class AutoClickerCheck extends Check {
 
     public AutoClickerCheck(FloppaAC plugin) {

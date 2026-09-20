@@ -28,9 +28,9 @@ import pl.floppaac.check.player.InventoryCheck;
 import pl.floppaac.check.player.NukerCheck;
 import pl.floppaac.check.movement.SprintSpoofCheck;
 import pl.floppaac.check.player.ScaffoldCheck;
+import pl.floppaac.check.player.XrayCheck;
 import pl.floppaac.data.PlayerData;
 
-/** Exemptiony oraz checki blokow i inventory. */
 public class PlayerListener implements Listener {
 
     private final FloppaAC plugin;
@@ -43,6 +43,7 @@ public class PlayerListener implements Listener {
     private final pl.floppaac.check.player.AutoTrapCheck autoTrap;
     private final InventoryCheck inventory;
     private final pl.floppaac.check.combat.KillAuraBotCheck botVerify;
+    private final XrayCheck xray;
 
     public PlayerListener(FloppaAC plugin) {
         this.plugin = plugin;
@@ -56,6 +57,7 @@ public class PlayerListener implements Listener {
         autoTrap = cm.get("AutoTrapA", pl.floppaac.check.player.AutoTrapCheck.class);
         inventory = cm.get("InventoryA", InventoryCheck.class);
         botVerify = cm.get("KillAuraBot", pl.floppaac.check.combat.KillAuraBotCheck.class);
+        xray = cm.get("XrayA", XrayCheck.class);
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
@@ -70,8 +72,8 @@ public class PlayerListener implements Listener {
         data.moveGaps.clear();
         data.chokeStreak = 0;
         if (p.getName() != null && p.hasPermission("floppaac.staff")) {
-            plugin.getAlertManager().info(p, "FloppaAC aktywny. Tryb testowy: kicki zamiast banow.");
-            plugin.getAlertManager().info(p, "Komendy: /floppaac verbose, /floppaac status, /floppaac vl.");
+            plugin.getAlertManager().info(p, "FloppaAC active. Test mode: kicks instead of bans.");
+            plugin.getAlertManager().info(p, "Commands: /floppaac verbose, /floppaac status, /floppaac vl.");
         }
     }
 
@@ -80,8 +82,9 @@ public class PlayerListener implements Listener {
         try {
             botVerify.cancel(e.getPlayer().getUniqueId());
         } catch (Exception ex) {
-            // Ignorowane.
+
         }
+        xray.remove(e.getPlayer().getUniqueId());
         plugin.getDataManager().remove(e.getPlayer());
     }
 
@@ -106,10 +109,11 @@ public class PlayerListener implements Listener {
         data.noFallPlateauTicks = 0;
         data.serverAirTicks = 0;
         data.resetMomentumGcd();
+        xray.reset(e.getPlayer().getUniqueId());
         try {
             botVerify.cancel(e.getPlayer().getUniqueId());
         } catch (Exception ex) {
-            // Ignorowane.
+
         }
     }
 
@@ -124,14 +128,13 @@ public class PlayerListener implements Listener {
         try {
             botVerify.cancel(e.getPlayer().getUniqueId());
         } catch (Exception ex) {
-            // Ignorowane.
+
         }
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onDeath(PlayerDeathEvent e) {
-        // Smierc resetuje faze spadku i stany ruchu: respawn i powrot
-        // z ekranu smierci to legalna przerwa, nie epizod FakeLag.
+
         PlayerData data = plugin.getDataManager().get(e.getEntity());
         data.fallDistAcc = 0.0;
         data.fallingAcc = false;
@@ -150,7 +153,7 @@ public class PlayerListener implements Listener {
         try {
             botVerify.cancel(e.getEntity().getUniqueId());
         } catch (Exception ex) {
-            // Ignorowane.
+
         }
     }
 
@@ -167,9 +170,7 @@ public class PlayerListener implements Listener {
         PlayerData data = plugin.getDataManager().get(e.getPlayer());
         long now = System.currentTimeMillis();
         data.lastSwingMs = now;
-        // Machniecie tuz po ciosie to para atak-machniecie (kolejnosc
-        // w burście FakeLag i opoznienie pakietu przy wyzszym pingu),
-        // nie aura bez machniec.
+
         if (now - data.lastAttackMs < 750L) {
             data.noSwingStrikes = 0;
         }
@@ -221,8 +222,7 @@ public class PlayerListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onGamemodeChange(PlayerGameModeChangeEvent e) {
-        // Zmiana trybu (creative <-> survival) bez teleportu potrafi
-        // zostawic leciacy akumulator spadku albo seria wznoszenia.
+
         PlayerData data = plugin.getDataManager().get(e.getPlayer());
         data.fallDistAcc = 0.0;
         data.fallingAcc = false;
@@ -239,7 +239,7 @@ public class PlayerListener implements Listener {
         try {
             botVerify.cancel(e.getPlayer().getUniqueId());
         } catch (Exception ex) {
-            // Ignorowane.
+
         }
     }
 
@@ -255,6 +255,7 @@ public class PlayerListener implements Listener {
         PlayerData data = plugin.getDataManager().get(player);
         fastBreak.handle(player, data, e.getBlock());
         nuker.handle(player, data, e.getBlock());
+        xray.handle(player, data, e.getBlock());
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)

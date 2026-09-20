@@ -11,17 +11,9 @@ import pl.floppaac.listener.MovementListener;
 import pl.floppaac.listener.PlayerListener;
 import pl.floppaac.util.TpsMonitor;
 
-/**
- * FloppaAC - wydajny server-side anticheat.
- * 100 procent Bukkit API, zero zaleznosci.
- * Cel: wykrywanie zlych pakietow (FakeLag, Blink, Timer),
- * desynchronizacji hitboxa oraz klasycznych cheatow PvP
- * przy zerowej tolerancji dla falszywych flag na legalnej grze.
- */
 public class FloppaAC extends JavaPlugin {
 
-    /** Aktualna wersja pluginu. */
-    public static final String VERSION = "1.8.2";
+    public static final String VERSION = "1.8.3";
 
     private static FloppaAC instance;
     private DataManager dataManager;

@@ -11,24 +11,6 @@ import pl.floppaac.data.PlayerData;
 import pl.floppaac.util.MoveUtil;
 import pl.floppaac.util.PingUtil;
 
-/**
- * VelocityA: brak odrzutu po trafieniu (anti-knockback).
- *
- * Serwer wysyla pakiet velocity (PlayerVelocityEvent) i zapisuje wektor.
- * Po odczekaniu (5 + ping/50 tickow) ofiara musi przemiescic sie
- * w kierunku odrzutu. Ocena jest kierunkowa (rzut na kierunek velocity),
- * wiec celowy sprint w bok nie maskuje cancela, a legalny odrzut
- * (silniejszy od sprintu) zawsze daje dodatni rzut.
- *
- * Poprawki 1.8.0:
- * - onDamage nie nadpisuje kierunku z onDamageFrom (podwojny arm
- *   w tym samym ticku kasowal knockbackFrom i test sciany),
- * - brak warunku isOnGround (cancel w powietrzu tez lapany),
- * - ocena pionu dla odrzutow w gore (eksplozje, punch),
- * - fallback na calkowity ruch gdy brak wektora velocity.
- * Zwolnienia: woda, pajeczyna, drabina, pojazd, lot oraz sciana
- * za plecami ofiary. Seria 2 potwierdzen.
- */
 public class VelocityCheck extends Check {
 
     public VelocityCheck(FloppaAC plugin) {
@@ -36,8 +18,7 @@ public class VelocityCheck extends Check {
     }
 
     public void onDamage(Player victim, PlayerData data) {
-        // onAttack uzbraja wczesniej z kierunkiem. Drugi arm z onHurt
-        // w tym samym ticku nie moze skasowac knockbackFrom.
+
         if (data.awaitingVelocity && data.knockbackFrom != null) {
             arm(data, victim);
             return;
@@ -94,7 +75,7 @@ public class VelocityCheck extends Check {
             data.knockbackVelocity = null;
             return;
         }
-        // Sciana za plecami: odrzut legalnie zerowy.
+
         if (data.knockbackFrom != null && hasWallBehind(player, data)) {
             data.velocityStreak = 0;
             data.knockbackVelocity = null;
@@ -123,15 +104,12 @@ public class VelocityCheck extends Check {
                     threshold = 0.10;
                 }
                 detailKind = String.format("kier=%.3f min=%.3f", dot, threshold);
-                // Rzut ponizej progu przy realnym wektorze to cancel.
-                // Celowy ruch w bok nie zeruje rzutu (ortogonalny),
-                // tylko ruch dokladnie przeciwny, ktorego sprint
-                // nie jest w stanie dac (odrzut silniejszy od sprintu).
+
                 if (dot < threshold) {
                     cancelled = true;
                 }
             } else if (expY > 0.25) {
-                // Odrzut glownie w gore: ofiara musi zyskac wysokosc.
+
                 detailKind = String.format("pion=%.3f exp=%.3f", dy, expY);
                 if (dy < 0.05 && !player.isOnGround()) {
                     cancelled = true;
@@ -167,7 +145,6 @@ public class VelocityCheck extends Check {
         }
     }
 
-    /** Czy blok na drodze odrzutu (metr od ofiary) jest solidny. */
     private boolean hasWallBehind(Player player, PlayerData data) {
         try {
             Location v = player.getLocation();

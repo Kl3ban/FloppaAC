@@ -8,15 +8,6 @@ import pl.floppaac.check.Check;
 import pl.floppaac.check.CheckType;
 import pl.floppaac.data.PlayerData;
 
-/**
- * ScaffoldA: automatyczny most pod soba. Dwa sygnaly:
- * AirBridge - 4+ bloki pod soba w jednej fazie powietrza bez
- * kucania (legalny nodrop/breezily miewa 2-3, sneak-podmiana
- * calkiem zwolniona).
- * JumpBridge - cykl skok-postaw-pod-soba krotszy niz 250 ms
- * 3 razy z rzedu (human jump-bridge to 300-400 ms, automat
- * utrzymuje rowny tempo).
- */
 public class ScaffoldCheck extends Check {
 
     public ScaffoldCheck(FloppaAC plugin) {
@@ -39,8 +30,7 @@ public class ScaffoldCheck extends Check {
         }
 
         if (player.isOnGround()) {
-            // Faza naziemna zamyka seria powietrzna, liczy sie jako cykl
-            // mostu-jumping tylko przy szybkim tempie.
+
             if (data.airPhasePlaces >= 4) {
                 data.airPhasePlaces = 0;
             }
@@ -55,7 +45,7 @@ public class ScaffoldCheck extends Check {
         }
 
         long now = System.currentTimeMillis();
-        // AirBridge: seria w jednej fazie powietrza, sneak wyklucza.
+
         if (!player.isSneaking()) {
             data.airPhasePlaces++;
             if (data.airPhasePlaces >= 4) {
@@ -66,8 +56,6 @@ public class ScaffoldCheck extends Check {
             data.airPhasePlaces = 0;
         }
 
-        // JumpBridge: postawienie pod soba krotko po ruszeniu fazy
-        // powietrznej (skok), rowne tempo = automat.
         if (data.airTicks <= 6 && now - data.lastBridgeJumpMs < 250L) {
             data.bridgeJumps++;
             if (data.bridgeJumps >= 3) {

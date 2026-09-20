@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-/** Przechowuje PlayerData oraz decay VL. */
 public class DataManager {
 
     private final Map<UUID, PlayerData> data = new ConcurrentHashMap<UUID, PlayerData>();

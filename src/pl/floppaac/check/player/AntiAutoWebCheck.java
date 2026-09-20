@@ -10,15 +10,6 @@ import pl.floppaac.check.Check;
 import pl.floppaac.check.CheckType;
 import pl.floppaac.data.PlayerData;
 
-/**
- * WebB (AntiAutoWeb): automatyczne oklejanie przeciwnika pajeczyna.
- * Sygnatura: WEB postawiony przy zywej istocie w zasiegu 5 blokow
- * (klikniecie w takim miejscu nie jest precyzyjna gra czlowieka,
- * to zakonczenie skryptu "web enemy"), 4+ w 3 sekundy.
- * Legalny budowniczy stawia web na PUSTEJ glebie, nie na graczu.
- * Wyjatek: brak graczy w poblizu nie zwalnia - sygnatura to sam
- * moment postawienia NA bycie.
- */
 public class AntiAutoWebCheck extends Check {
 
     public AntiAutoWebCheck(FloppaAC plugin) {

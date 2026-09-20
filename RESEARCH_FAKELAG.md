@@ -1,45 +1,29 @@
-# RESEARCH: FakeLag in open-source clients (2026-09-08)
+# FakeLag research in open source clients
 
-## BleachHack (BleachDev/BleachHack, 795 stars)
+Date: 2026-09-08. Sources: public repositories.
 
-`org.bleachhack.module.mods.FakeLag`: queues ALL `PlayerMoveC2SPacket`
-(position, rotation and ground) and drops them. On release it sends
-only packets with position data (look-only packets are discarded).
-Attacks, keepalives and transactions flow normally the whole time.
-Modes: Always (holds up to a second limit, by default no limit)
-and Pulse (release every X seconds, by default every 1 s).
+## BleachHack (BleachDev/BleachHack)
 
-Server-side signature: full movement gap, stable ping (keepalive
-answered), attacks during the gap, then a position burst.
+`org.bleachhack.module.mods.FakeLag` queues every `PlayerMoveC2SPacket` (position, rotation, ground) and drops it. On release only packets with position data are sent, look only packets are discarded. Attacks, keepalives and transactions flow normally. Modes: Always, holds packets up to a configurable limit, default unlimited, and Pulse, releases on an interval, default 1 s.
+
+Server signature: full movement gap, stable ping, attacks during the gap, position burst after the gap.
 
 ## MoonLight (randomguy3725/MoonLight)
 
-`features/modules/impl/exploit/FakeLag.java`: PingSpoof with Min/Max MS
-delay (default 200/200 ms, range up to 5000 ms).
-Flushes immediately on attack and on receiving damage (hurtTime > 0).
+`features/modules/impl/exploit/FakeLag.java` implements ping spoof with a minimum and maximum delay, default 200 ms, range up to 5000 ms. The queue flushes on attack and on damage.
 
-Signature: shorter gaps around 200 ms, attacks always instant.
-Conclusion: the 300 ms gap threshold in FakeLagA MISSES the default
-MoonLight setup. A counter of repeated 180-250 ms gaps with bursts
-is needed.
+Signature: repeated gaps around 200 ms, attacks always instant. The 300 ms gap threshold of FakeLagA misses this setup. A counter for repeated 180 to 250 ms gaps with bursts is required.
 
-## Remaining implementations to check
+## Remaining implementations to inspect
 
-- LiquidbouncePlus-Reborn: `modules/player/FakeLag.kt`
-- LuminaClient: `module/impl/movement/FakeLag.java`
-- NightX-Client: `module/impl/exploit/FakeLag.kt`
-- LWK (CS cheat, different context, skip)
+- LiquidbouncePlus-Reborn, `modules/player/FakeLag.kt`
+- LuminaClient, `module/impl/movement/FakeLag.java`
+- NightX-Client, `module/impl/exploit/FakeLag.kt`
+- LWK, CS context, skipped
 
 ## Conclusions for FloppaAC
 
-1. FakeLagB (attack inside a gap at stable ping) is the most reliable
-   signal, because every variant lets attacks through instantly.
-2. FakeLagA needs a second threshold for short repeated gaps
-   (180-250 ms, at least 4-5 episodes per window) to catch
-   MoonLight at 200 ms.
-3. LagGuard (kick at 6 gaps of 900 ms per minute) can kick the cheater
-   with a lag message instead of a cheat flag. When FakeLag VL grows,
-   LagGuard should back off.
-4. Pulse every 1 s gives 60 gaps per minute. The episode counter must
-   survive that without false positives on legit play (ping and TPS
-   as gates).
+1. FakeLagB, attack inside a gap at stable ping, is the most reliable signal. Every inspected variant lets attacks through instantly.
+2. FakeLagA needs a second threshold for short repeated gaps, 180 to 250 ms, at least 4 episodes per window, to catch MoonLight at 200 ms.
+3. LagGuard kicks at 6 gaps of 900 ms per minute and can remove a cheater with a lag message instead of a cheat flag. FakeLag VL must make LagGuard back off.
+4. Pulse every second produces 60 gaps per minute. The episode counter has to survive that without false positives on legal play, gated by ping and TPS.

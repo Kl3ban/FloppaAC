@@ -7,10 +7,6 @@ import pl.floppaac.check.Check;
 import pl.floppaac.check.CheckType;
 import pl.floppaac.data.PlayerData;
 
-/**
- * BadPacketsA: pakiety ktorych vanilla klient nigdy nie wysyla.
- * Niemozliwy pitch, ruch po smierci, flaga lotu bez uprawnien.
- */
 public class BadPacketsCheck extends Check {
 
     public BadPacketsCheck(FloppaAC plugin) {

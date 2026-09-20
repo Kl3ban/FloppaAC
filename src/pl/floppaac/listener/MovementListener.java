@@ -34,11 +34,6 @@ import pl.floppaac.data.PlayerData;
 import pl.floppaac.util.MoveUtil;
 import pl.floppaac.util.RotationMath;
 
-/**
- * Centralny ruch gracza. Raz liczymy delty i ksiegowosc FakeLag,
- * potem odpalamy wszystkie checki movement.
- * Referencje checkow cachowane w polach (zero lookupow na event).
- */
 public class MovementListener implements Listener {
 
     private final FloppaAC plugin;
@@ -108,18 +103,15 @@ public class MovementListener implements Listener {
                 || from.getY() != to.getY()
                 || from.getZ() != to.getZ();
 
-        // Kazdy pakiet ruchu, takze sam obrot glowy.
         data.anyGapMs = now - data.lastAnyPacketMs;
         data.lastAnyPacketMs = now;
-        // Multitool: probkowanie reki na kazdym pakiecie (flick).
+
         try {
             multi.handleMove(player, data);
         } catch (Exception ex) {
-            // Brak probki nie blokuje ruchu.
+
         }
 
-        // --- KillAuraJ: probkowanie delt rotacji (kazdy pakiet ruchu,
-        // takze sam obrot glowy bez zmiany pozycji) ---
         if (data.gcdHasPrev) {
             double dyaw = RotationMath.wrapDegrees(to.getYaw() - data.gcdPrevYaw);
             double dpitch = RotationMath.wrapDegrees(to.getPitch() - data.gcdPrevPitch);
@@ -135,22 +127,19 @@ public class MovementListener implements Listener {
         data.gcdHasPrev = true;
 
         if (!positionChanged) {
-            // Sam obrot glowy to tez pakiet z flaga gruntu (jak u Grima).
-            // NoFall i GroundSpoof oceniaja deklarowany grunt, BadPackets pitch.
+
             noFall.handle(player, data, from, to);
             groundSpoof.handle(player, data, from, to);
             badPackets.handleMove(player, data, to);
             return;
         }
 
-        // --- ksiegowosc FakeLag i Timer ---
         long gap = now - data.lastMoveMs;
         data.lastMoveMs = now;
         PlayerData.pushCapped(data.moveTimes, now, 120);
         PlayerData.pushCapped(data.moveGaps, gap, 40);
         timer.handleIdleGap(data, gap);
-        // LagGuard patrzy na przerwe w DOWOLNYCH pakietach (takze obrot),
-        // zeby stanie i rozgladanie nie liczylo sie jako luka lacza.
+
         lagGuard.handleGap(player, data, data.anyGapMs);
 
         double dx = to.getX() - from.getX();
@@ -161,15 +150,14 @@ public class MovementListener implements Listener {
         if (player.isOnGround()) {
             data.groundTicks++;
             if (data.airTicks >= 3) {
-                // Ladowanie po skoku: ped z lotu rozladowuje sie jeszcze
-                // przez kilka tickow (SpeedA ma luzniejszy limit).
+
                 data.lastLandMs = now;
             }
             data.airTicks = 0;
             if (!data.movementExempt() && !MoveUtil.inVehicle(player)) {
                 data.setbackLoc = from.clone();
                 data.lastGroundLoc = from.clone();
-                // Bezpieczny grunt poza webem i woda: cel cofania.
+
                 if (!MoveUtil.inWeb(player) && !MoveUtil.inLiquid(player)) {
                     data.lastSafeLoc = from.clone();
                 }
@@ -181,12 +169,10 @@ public class MovementListener implements Listener {
         data.lastDeltaY = dy;
         data.lastHorizontalDist = horizontal;
 
-        // Pakiety ruchu = zywy gracz: ticki immunizacji na knockback maleja.
         if (data.kbTicksLeft > 0) {
             data.kbTicksLeft--;
         }
 
-        // --- checki ---
         timer.handle(player, data);
         fakeLag.handleMove(player, data, gap);
         fly.handle(player, data, from, to);

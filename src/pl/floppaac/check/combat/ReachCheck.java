@@ -10,11 +10,6 @@ import pl.floppaac.check.CheckType;
 import pl.floppaac.data.PlayerData;
 import pl.floppaac.util.PingUtil;
 
-/**
- * ReachA: bicie z za duzej odleglosci.
- * Vanilla survival: 3.0 bloku od oka do hitboxa.
- * Mierzymy min(oko do oczu, oko do nog) oraz luz na desync.
- */
 public class ReachCheck extends Check {
 
     public ReachCheck(FloppaAC plugin) {

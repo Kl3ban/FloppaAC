@@ -8,15 +8,6 @@ import pl.floppaac.check.CheckType;
 import pl.floppaac.data.PlayerData;
 import pl.floppaac.util.MoveUtil;
 
-/**
- * CriticalsA: wykrywanie wymuszonych krytykow pakietowych.
- *
- * Krytyk vanilla wymaga spadania z narastajacym fallDistance.
- * Cheat packet-crits wysyla mikroruchy Y, przez co serwer widzi gracza
- * w powietrzu BEZ narastania fallDistance i bez realnego spadku.
- * Zwykly sprint na ziemi nigdy nie liczy (poprzednia wersja tak robila
- * i byl to blad). Prawdziwe skoki maja fallDistance i zeruja serie.
- */
 public class CriticalsCheck extends Check {
 
     public CriticalsCheck(FloppaAC plugin) {
@@ -29,8 +20,7 @@ public class CriticalsCheck extends Check {
             data.critStreak = 0;
             return;
         }
-        // Cios z otwartym ekwipunkiem (InventoryWalk) nigdy nie jest
-        // krytykiem - to pakietowy multiaction, liczy go InventoryCheck.
+
         if (data.invOpen) {
             data.critStreak = 0;
             return;
@@ -41,17 +31,17 @@ public class CriticalsCheck extends Check {
             data.critStreak = 0;
             return;
         }
-        // Na ziemi krytyk jest niemozliwy, wiec sprint na ziemi to czysto.
+
         if (attacker.isOnGround()) {
             data.critStreak = 0;
             return;
         }
-        // Prawdziwy spadek z narastajacym fallDistance to legalny krytyk.
+
         if (attacker.getFallDistance() >= 0.3f) {
             data.critStreak = 0;
             return;
         }
-        // W powietrzu bez spadku i prawie bez ruchu Y: sfaulszowany upadek.
+
         double dy = data.lastDeltaY;
         if (Math.abs(dy) < 0.08 && data.airTicks >= 2 && data.airTicks <= 10) {
             data.critStreak++;

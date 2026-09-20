@@ -9,12 +9,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-/**
- * Alerty FloppaAC. Trzy poziomy:
- * alert: potwierdzona flaga (VL rosnie), do ekipy i do testera,
- * verbose: podejrzenie ponizej progu, tylko dla trybu verbose,
- * info: komunikaty systemowe dla testera.
- */
 public class AlertManager {
 
     private final FloppaAC plugin;
@@ -87,16 +81,12 @@ public class AlertManager {
                 + check + " VL=" + vl + " (" + details + ")");
     }
 
-    /**
-     * Podejrzenie ponizej progu flagi. Dostaje je gracz z wlaczonym
-     * verbose oraz ekipa z wlaczonym verbose.
-     */
     public void verbose(Player subject, String check, int ping, String details) {
         if (!plugin.getConfig().getBoolean("alerts.verbose-enabled", true)) {
             return;
         }
         String tps = String.format("%.1f", plugin.getTpsMonitor().getTps());
-        String msg = "§8[§bFloppaAC§8] §7podejrzane §b" + check + " §7u §e" + subject.getName()
+        String msg = "§8[§bFloppaAC§8] §7suspicious §b" + check + " §7by §e" + subject.getName()
                 + " §8(ping: §e" + ping + "§8 tps: §e" + tps + "§8)";
         if (details != null && !details.isEmpty()) {
             msg += " §8(§7" + details + "§8)";

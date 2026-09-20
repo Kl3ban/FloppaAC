@@ -8,12 +8,6 @@ import pl.floppaac.check.CheckType;
 import pl.floppaac.data.PlayerData;
 import pl.floppaac.util.MoveUtil;
 
-/**
- * NoSlowA: pelna predkosc podczas blokowania, jedzenia i celowania.
- * Vanilla tarcza w gore albo jedzenie to okolo 60 procent predkosci.
- * Prog liczony z modelu SpeedCheck (mikstura i lod), wymagana seria
- * 4 tickow, bo desync isHandRaised przy pingu 60 daje 1-2 ticki.
- */
 public class NoSlowCheck extends Check {
 
     public NoSlowCheck(FloppaAC plugin) {
@@ -45,7 +39,7 @@ public class NoSlowCheck extends Check {
                 flag(player, data, String.format("dist=%.3f max=%.3f blok=%b",
                         horizontal, max, player.isBlocking()));
                 data.noSlowStreak = 0;
-                // Flaga = cofniecie: noslowdown traci nadmierne ticki.
+
                 perTickPushback(player, data, from);
             }
         } else {

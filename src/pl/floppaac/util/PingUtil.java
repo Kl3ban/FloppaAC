@@ -5,11 +5,6 @@ import pl.floppaac.data.PlayerData;
 
 import java.lang.reflect.Method;
 
-/**
- * Odczyt pingu gracza przez refleksje (bez NMS w kodzie).
- * Dziala na Spigot, Paper i Purpur. Fallback 0 gdy brak metody.
- * Wynik cache 2 s aby nie wywolywac refleksji co tick.
- */
 public final class PingUtil {
 
     private static Method getPingMethod;
@@ -49,8 +44,6 @@ public final class PingUtil {
         return ping;
     }
 
-    /** Luz progow jako ulamek 0.0 do 1.0. Krzywa schodkowa, bo desync
-     *  3 tickow istnieje takze przy niskim pingu. */
     public static double leniency(org.bukkit.configuration.file.FileConfiguration cfg, int ping) {
         if (ping >= cfg.getInt("high-ping", 220)) {
             return cfg.getDouble("high-ping-leniency", 0.35);

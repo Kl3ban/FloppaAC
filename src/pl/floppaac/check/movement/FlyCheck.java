@@ -9,10 +9,6 @@ import pl.floppaac.data.PlayerData;
 import pl.floppaac.util.MoveUtil;
 import pl.floppaac.util.PingUtil;
 
-/**
- * FlyA: pionowa predkosc. Skok vanilla max 0.42 plus jump boost.
- * Potem Y zawsze spada (grawitacja 0.08 na tick).
- */
 public class FlyCheck extends Check {
 
     public FlyCheck(FloppaAC plugin) {
@@ -21,20 +17,19 @@ public class FlyCheck extends Check {
 
     public void handle(Player player, PlayerData data, Location from, Location to) {
         if (data.movementExempt()) {
-            // Karencja po naszym pushbacku NIE zeruje serii.
+
             return;
         }
 
         if (data.velocityExempt(player, System.currentTimeMillis())) {
-            // Odrzut (zombie, strzala, TNT): grawitacja legalnie zaburzona
-            // przez ticki odbicia - nie oceniamy ich.
+
             return;
         }
         if (MoveUtil.canFly(player) || MoveUtil.inVehicle(player)) {
             data.riseStreak = 0;
             return;
         }
-        // Lewitacja Shulkera unosi legalnie.
+
         if (MoveUtil.hasLevitation(player)) {
             data.riseStreak = 0;
             data.flyBigStreak = 0;
@@ -44,8 +39,7 @@ public class FlyCheck extends Check {
             data.riseStreak = 0;
             return;
         }
-        // 1.7.8: rzadkie mechaniki pionowe - odbicie slime, ciag
-        // miodu, nawiew babelkow, toniecie w powder snow.
+
         if (MoveUtil.onSlime(player) || MoveUtil.onHoney(player)
                 || MoveUtil.inBubbleColumn(player) || MoveUtil.inPowderSnow(player)) {
             data.riseStreak = 0;
@@ -67,8 +61,7 @@ public class FlyCheck extends Check {
         double maxRise = MoveUtil.JUMP_VELOCITY
                 + MoveUtil.jumpPotionLevel(player) * 0.12 + 0.05;
         maxRise = MoveUtil.applyLeniency(maxRise, leniency);
-        // Przy pingu 60 dwa ticki sklejone w jeden event daja dy 0.8,
-        // wiec pojedynczy duzy wznios wymaga potwierdzenia.
+
         if (dy > maxRise && data.airTicks > 2) {
             data.flyBigStreak++;
             if (data.flyBigStreak >= 2) {
@@ -87,7 +80,7 @@ public class FlyCheck extends Check {
             flag(player, data, String.format("rise x%d dy=%.3f ping=%d",
                     data.riseStreak, dy, ping));
             data.riseStreak = 0;
-            // Lot przerwany od razu, nie po setbacku.
+
             snapToGround(player, data);
         }
     }

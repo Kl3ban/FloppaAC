@@ -2,13 +2,9 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 
 import pl.floppaac.util.MomentumMath;
+import pl.floppaac.util.OreStats;
 import pl.floppaac.util.RotationMath;
 
-/**
- * Test logiki FloppaAC bez serwera.
- * Kopiuje matematyke ClickStats i FakeLagMath (klasy czyste).
- * Uruchomienie: java -cp classes;test-classes FloppaTest
- */
 public class FloppaTest {
 
     static int pass = 0;
@@ -52,6 +48,11 @@ public class FloppaTest {
         testGcdWrapAround();
         testVerifyStartsOnSuspicion();
         testVerifyCooldownAndConfirm();
+        testOreClassification();
+        testRatioLegitMinerNotFlagged();
+        testRatioTunnelRatFlagged();
+        testLosStreakThreshold();
+        testWindowCapPush();
         System.out.println("PASS=" + pass + " FAIL=" + fail);
         if (fail > 0) {
             System.exit(1);
@@ -67,8 +68,6 @@ public class FloppaTest {
             System.out.println("FAIL " + name);
         }
     }
-
-    // --- ClickStats (kopia logiki) ---
 
     static double mean(Deque<Long> gaps) {
         if (gaps.isEmpty()) return 0.0;
@@ -109,7 +108,7 @@ public class FloppaTest {
     }
 
     static void testStableCpsNotFlagged() {
-        // Utalentowany gracz: stabilne 10 CPS przez 5 s, stddev okolo 4 ms.
+
         Deque<Long> gaps = new ArrayDeque<Long>();
         Deque<Long> hits = new ArrayDeque<Long>();
         long t = 1000000L;
@@ -126,7 +125,7 @@ public class FloppaTest {
     }
 
     static void testExtremeMetronomeFlagged() {
-        // Bot: 12 CPS z idealnym metronomem 83 ms, stddev 0.
+
         Deque<Long> gaps = new ArrayDeque<Long>();
         Deque<Long> hits = new ArrayDeque<Long>();
         long t = 2000000L;
@@ -162,8 +161,6 @@ public class FloppaTest {
         }
         ok(classify(gaps, hits) == 3, "sub40-bursts-flagged");
     }
-
-    // --- FakeLagMath (kopia logiki) ---
 
     static boolean isChoke(long gapMs, int burstMoves, int pingMs) {
         if (pingMs > 220) return false;
@@ -242,11 +239,8 @@ public class FloppaTest {
         ok(!isShortChoke(120L, 6, 60), "short-choke-needs-gap");
     }
 
-    // --- Model bilansu Timera (lustro TimerCheck: 50 ms za ruch, dryf 250 ms) ---
-
     static final long TIMER_DRIFT_NS = 250000000L;
 
-    /** Symuluje strumien ruchow co intervalNs przez count krokow. Zwraca liczbe przekroczen. */
     static int timerExceeds(long intervalNs, int count) {
         long now = 0L;
         long balance = 0L;
@@ -270,19 +264,19 @@ public class FloppaTest {
     }
 
     static void testTimerLegitNoExceed() {
-        // Legalne 20 ruchow na s z jitterem: zero przekroczen.
+
         ok(timerExceeds(50000000L, 60) == 0, "timer-legit-no-exceed");
     }
 
     static void testTimerCheatExceeds() {
-        // Timer 2x: 40 ruchow na s daje ciagle przekroczenia (seria do flagi).
+
         ok(timerExceeds(25000000L, 40) >= 3, "timer-cheat-exceeds");
-        // Timer 1.2x (stary prog 26/s go mijal): tez narasta do serii.
+
         ok(timerExceeds(41667000L, 90) >= 3, "timer-slow-cheat-exceeds");
     }
 
     static void testTimerSingleBurstOnce() {
-        // Stall 500 ms potem 10 ruchow naraz: jedno przekroczenie, nie seria.
+
         long now = 0L;
         long balance = 0L;
         boolean init = false;
@@ -306,8 +300,6 @@ public class FloppaTest {
         }
         ok(exceeds <= 1, "timer-single-burst-once");
     }
-
-    // --- Model czasu kopania (lustro DigTime) ---
 
     static double digSpeed(String item, String block) {
         String i = item.toUpperCase();
@@ -361,30 +353,30 @@ public class FloppaTest {
     }
 
     static void testDigObsidianBest() {
-        // Obsidian kilofem netherite eff5 haste2: okolo 30 tickow.
+
         long exp = digExpected(50.0, digSpeed("NETHERITE_PICKAXE", "OBSIDIAN"), 5, 2);
         ok(exp >= 20L && exp <= 60L, "dig-obsidian-best");
     }
 
     static void testDigCheatInstant() {
-        // Instant obsidianu (2 ticki) przy oczekiwanych 30 to cheat.
+
         long exp = digExpected(50.0, digSpeed("NETHERITE_PICKAXE", "OBSIDIAN"), 5, 2);
         ok(digImpossible(2L, exp), "dig-cheat-instant");
     }
 
     static void testDigLegitOk() {
-        // Legalne 40 tickow przy oczekiwanych 30 nie flaguje.
+
         long exp = digExpected(50.0, digSpeed("NETHERITE_PICKAXE", "OBSIDIAN"), 5, 2);
         ok(!digImpossible(40L, exp), "dig-legit-ok");
     }
 
     static void testDigBedrock() {
-        // Bedrock (twardosc ujemna) lamany w survival to cheat.
+
         ok(digExpected(-1.0, 9.0, 5, 2) == Long.MAX_VALUE, "dig-bedrock");
     }
 
     static void testGrassIsInstant() {
-        // Nazwy materialow instant wedlug FastBreakCheck.isInstant.
+
         String[] names = {"GRASS", "TALL_GRASS", "DANDELION", "TORCH",
             "OAK_BUTTON", "WHITE_CARPET", "OAK_SAPLING", "RAIL", "VINE"};
         boolean all = true;
@@ -393,17 +385,15 @@ public class FloppaTest {
                     || n.contains("TORCH") || n.contains("BUTTON") || n.contains("CARPET")
                     || n.contains("SAPLING") || n.contains("RAIL") || n.contains("VINE")
                     || n.contains("SNOW"))) {
-                // DANDELION to kwiat w starszych wersjach po nazwie materialu.
+
                 if (!n.equals("DANDELION")) all = false;
             }
         }
         ok(all || true, "grass-tier-sanity");
     }
 
-    // --- Model FakeLag 1.7.7 (lustro FakeLagMath) ---
-
     static double expCatchup(long gapMs) {
-        return Math.max(0L, gapMs / 50L) * 0.33; // bloki, jak FakeLagMath
+        return Math.max(0L, gapMs / 50L) * 0.33;
     }
 
     static boolean freeze(double skipBlocks, long gapMs) {
@@ -411,24 +401,22 @@ public class FloppaTest {
     }
 
     static void testFreezeRecognized() {
-        // Zamrozenie 400 ms przy sprincie: powrot jednym skokiem 2.5 bloku.
+
         ok(freeze(2.5, 400), "freeze-recognized-big-skip");
     }
 
     static void testFreezeNotStandingStill() {
-        // Fakelag: gracz stoi w miejscu, skok wjazdu maly.
+
         ok(!freeze(0.2, 400), "fakelag-small-skip-not-freeze");
     }
 
     static void testFakelagSmallGapNotFreeze() {
-        // Choke 200 ms z mikroskokiem: nie do obrony jako freeze
-        // (200 ms = 4 ticki = max okolo 2 blokow azylu... prog 0.55 daje 1.32).
+
         ok(!freeze(0.5, 200), "fakelag-200ms-small-skip");
     }
 
     static void testDesyncJitterDetected() {
-        // Mediana 22 ms przy 50 ms ticku = dryf 56%. Regula:
-        // flaga wymaga dryfu >= 70% (mediana < 15 ms) ORAZ gestosci 8+/s.
+
         long median = 22L;
         double drift = (1.0 - (double) median / 50.0) * 100.0;
         boolean flagged = drift >= 70.0 && median < 35L;
@@ -440,35 +428,31 @@ public class FloppaTest {
     }
 
     static void testDesyncJitterPingGuard() {
-        // Wysoki ping wylacza sygnal desyncu.
-        boolean cond = 150 > 100; // pingEma guard
+
+        boolean cond = 150 > 100;
         ok(cond, "desync-disabled-high-ping");
     }
 
     static void testCatchupScales() {
-        // 500 ms => 10 tickow => 3.3 bloku.
+
         ok(Math.abs(expCatchup(500L) - 3.3) < 0.001, "catchup-500ms-33-blocks");
     }
 
-    // --- MomentumMath 1.7.8 (lancuch pedu, klasa z classpath) ---
-
     static void testMomentumChainLegit() {
-        // Legalny sprint-jump: start 0.48, potem lancuch 0.91.
-        // Zadna delta nie przekracza lancucha od startu => nadmiar 0.
+
         double m = 0.48;
         double excess = 0.0;
         for (int i = 0; i < 20; i++) {
             m = MomentumMath.chain(m, true);
-            double h = m; // idealna fizyka: h == model
+            double h = m;
             excess += MomentumMath.excessTick(h, m);
         }
         ok(excess < 0.001, "momentum-legit-no-excess");
     }
 
     static void testMomentumConstant130Flagged() {
-        // Stala 0.45 (1.6x sprintu... naprawde 0.45/0.28) w locie:
-        // lancuch wchodzi na 0.45-eps, nadmiar ~0.016/tick.
-        double m = 0.48; // start sprint-jump
+
+        double m = 0.48;
         double excess = 0.0;
         int ticks = 0;
         for (int i = 0; i < 60; i++) {
@@ -484,8 +468,7 @@ public class FloppaTest {
     }
 
     static void testMomentumConstant120Flagged() {
-        // Stala 0.40 w locie (1.2x limitu powietrznego SpeedA):
-        // lancuch opada, cheat trzyma 0.40 => nadmiar ~0.01/tick.
+
         double m = 0.48;
         double excess = 0.0;
         int ticks = 0;
@@ -502,15 +485,13 @@ public class FloppaTest {
     }
 
     static void testMomentumSprintJumpLegit() {
-        // Legalny sprint-jump: seria h = 0.48, potem *0.91+0.026.
-        // Sygnatura legalna == lancuch liczony od pierwszej delty
-        // (SpeedB zeruje bilans w airTicks<=1): nadmiar 0.
+
         double[] hs = new double[20];
         hs[0] = 0.48;
         for (int i = 1; i < hs.length; i++) {
             hs[i] = hs[i - 1] * MomentumMath.AIR_DRAG + MomentumMath.SPRINT_ACCEL;
         }
-        // Model liczony od HS[0] (po resecie pierwszego ticku).
+
         double m = hs[0];
         double excess = 0.0;
         for (int i = 1; i < hs.length; i++) {
@@ -520,10 +501,8 @@ public class FloppaTest {
         ok(excess < 0.001, "momentum-sprint-jump-legit");
     }
 
-    // --- RotationMath 1.7.8 (GCD, klasa z classpath) ---
-
     static void testGcdLegitOnGrid() {
-        // Legalny gracz: delty wielokrotnosc 0.15 stopnia (sensywnosc).
+
         java.util.Deque<Double> yaw = new java.util.ArrayDeque<Double>();
         double[] base = {0.15, 0.30, 0.45, 0.60, 0.90, 1.20, 0.15};
         java.util.Random rnd = new java.util.Random(42L);
@@ -537,7 +516,7 @@ public class FloppaTest {
     }
 
     static void testGcdOffGridFlagged() {
-        // Aim assist: 19 delt na siatce 0.15, 5 delt off-grid (0.071).
+
         java.util.Deque<Double> yaw = new java.util.ArrayDeque<Double>();
         for (int i = 0; i < 24; i++) {
             yaw.addLast(i % 5 == 0 ? 0.0713 : 0.15);
@@ -548,8 +527,7 @@ public class FloppaTest {
     }
 
     static void testGcdBestDivisorFloatRounding() {
-        // Delty z bledem float32 (jak po transformacji klienta):
-        // glosowanie kandydatow ma znalezc sensywnosc, nie LSB.
+
         java.util.Deque<Double> yaw = new java.util.ArrayDeque<Double>();
         double[] noisy = {0.1499999, 0.3000001, 0.4499998, 0.6000002, 0.7499997};
         for (int i = 0; i < 20; i++) {
@@ -561,28 +539,79 @@ public class FloppaTest {
     }
 
     static void testVerifyStartsOnSuspicion() {
-        // Suma VL 2 przy swiezym ataku i braku weryfikacji: start.
+
         ok(pl.floppaac.util.VerifyMath.shouldStart(2, 1000L, Long.MAX_VALUE), "verify-starts-on-suspicion");
-        // Za male VL albo stary atak albo swieza weryfikacja: brak startu.
+
         ok(!pl.floppaac.util.VerifyMath.shouldStart(1, 1000L, Long.MAX_VALUE), "verify-needs-vl");
         ok(!pl.floppaac.util.VerifyMath.shouldStart(5, 30000L, Long.MAX_VALUE), "verify-needs-fresh-attack");
         ok(!pl.floppaac.util.VerifyMath.shouldStart(5, 1000L, 10000L), "verify-cooldown");
     }
 
     static void testVerifyCooldownAndConfirm() {
-        // Dopiero 2 trafienia w niewidzialnego bota potwierdzaja.
+
         ok(!pl.floppaac.util.VerifyMath.isConfirmed(0), "verify-no-confirm-zero");
         ok(!pl.floppaac.util.VerifyMath.isConfirmed(1), "verify-no-confirm-one");
         ok(pl.floppaac.util.VerifyMath.isConfirmed(2), "verify-confirmed-two");
     }
 
     static void testGcdWrapAround() {
-        // Obroty przez 180/-180: wrapDegrees musi zwracac maly kat,
-        // nie 359 stopni.
+
         double w1 = RotationMath.wrapDegrees(190.0);
         double w2 = RotationMath.wrapDegrees(-190.0);
         ok(Math.abs(w1) <= 180.0 && Math.abs(w2) <= 180.0
                 && Math.abs(RotationMath.wrapDegrees(359.0)) <= 1.0,
                 "gcd-wrap-around");
+    }
+
+    static void testOreClassification() {
+        boolean a = OreStats.isValuableOre("DIAMOND_ORE")
+                && OreStats.isValuableOre("DEEPSLATE_DIAMOND_ORE")
+                && OreStats.isValuableOre("ANCIENT_DEBRIS")
+                && OreStats.isValuableOre("NETHER_QUARTZ_ORE");
+        boolean b = !OreStats.isValuableOre("STONE")
+                && !OreStats.isValuableOre("NETHERRACK")
+                && !OreStats.isValuableOre("OBSIDIAN");
+        boolean c = OreStats.isWaste("STONE")
+                && OreStats.isWaste("DEEPSLATE")
+                && OreStats.isWaste("NETHERRACK")
+                && OreStats.isWaste("TUFF");
+        boolean d = !OreStats.isWaste("DIAMOND_ORE")
+                && !OreStats.isWaste("OBSIDIAN")
+                && !OreStats.isWaste("MOSSY_COBBLESTONE");
+        ok(a && b && c && d, "ore-classification");
+    }
+
+    static void testRatioLegitMinerNotFlagged() {
+        Deque<Long> w = OreStats.newWindow(30);
+        for (int i = 0; i < 10; i++) {
+            OreStats.push(w, OreStats.ORE, 30);
+            OreStats.push(w, OreStats.WASTE, 30);
+            OreStats.push(w, OreStats.WASTE, 30);
+        }
+        ok(!OreStats.xrayRatioFlag(w, 30, 8, 1.2), "ratio-legit-clean");
+    }
+
+    static void testRatioTunnelRatFlagged() {
+        Deque<Long> w = OreStats.newWindow(30);
+        for (int i = 0; i < 15; i++) {
+            OreStats.push(w, OreStats.ORE, 30);
+            OreStats.push(w, OreStats.WASTE, 30);
+        }
+        ok(OreStats.xrayRatioFlag(w, 30, 8, 1.2), "ratio-tunnel-flagged");
+    }
+
+    static void testLosStreakThreshold() {
+        ok(!OreStats.xrayLosFlag(3, 4), "los-streak-below");
+        ok(OreStats.xrayLosFlag(4, 4), "los-streak-reached");
+    }
+
+    static void testWindowCapPush() {
+        Deque<Long> w = OreStats.newWindow(30);
+        for (int i = 0; i < 40; i++) {
+            OreStats.push(w, i % 3 == 0 ? OreStats.ORE : OreStats.WASTE, 30);
+        }
+        ok(w.size() == 30 && w.peekFirst().longValue() != 0L
+                && w.pollFirst().longValue() == OreStats.WASTE,
+                "window-cap-push");
     }
 }

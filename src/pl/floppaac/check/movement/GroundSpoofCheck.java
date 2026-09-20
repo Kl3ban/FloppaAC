@@ -9,13 +9,6 @@ import pl.floppaac.check.CheckType;
 import pl.floppaac.data.PlayerData;
 import pl.floppaac.util.MoveUtil;
 
-/**
- * GroundSpoofA: klient deklaruje grunt, ktorego nie ma.
- * Serwer (isOnGround z pakietu) wierzy, ze gracz stoi, a pod stopami
- * w promieniu 3x3 nie ma solidnej powierzchni blizej niz 0.6 bloku
- * i gracz porusza sie w pionie. Wymagana seria 5.
- * Pajeczyny, woda, drabiny, pojazdy i lot zwalniaja.
- */
 public class GroundSpoofCheck extends Check {
 
     public GroundSpoofCheck(FloppaAC plugin) {
@@ -24,11 +17,11 @@ public class GroundSpoofCheck extends Check {
 
     public void handle(Player player, PlayerData data, Location from, Location to) {
         if (data.movementExempt()) {
-            // Karencja po naszym pushbacku NIE zeruje serii.
+
             return;
         }
         if (data.velocityExempt(player, System.currentTimeMillis())) {
-            // Odrzut: deklarowany grunt moze legalnie odbiegac od realnego.
+
             return;
         }
         if (MoveUtil.canFly(player) || MoveUtil.inVehicle(player)
@@ -36,7 +29,7 @@ public class GroundSpoofCheck extends Check {
                 || MoveUtil.inWeb(player) || MoveUtil.inUnloadedChunk(to)) {
             return;
         }
-        // Krotki desync gruntu 1-3 ticki jest legalny.
+
         if (!player.isOnGround() || data.airTicks <= 3) {
             return;
         }

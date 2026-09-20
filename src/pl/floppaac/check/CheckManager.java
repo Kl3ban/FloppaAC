@@ -31,12 +31,12 @@ import pl.floppaac.check.player.LagGuardCheck;
 import pl.floppaac.check.player.NoSlowCheck;
 import pl.floppaac.check.player.NukerCheck;
 import pl.floppaac.check.player.ScaffoldCheck;
+import pl.floppaac.check.player.XrayCheck;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-/** Rejestr wszystkich checkow FloppaAC. */
 public class CheckManager {
 
     private final FloppaAC plugin;
@@ -79,6 +79,7 @@ public class CheckManager {
         add(new NoSlowCheck(plugin));
         add(new InventoryCheck(plugin));
         add(new LagGuardCheck(plugin));
+        add(new XrayCheck(plugin));
     }
 
     private void add(Check check) {

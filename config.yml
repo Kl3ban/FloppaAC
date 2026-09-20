@@ -1,50 +1,31 @@
-# ============================================================
-#  FloppaAC 1.8.2 - configuration
-#  VL = violation level. Each check collects VL that decays
-#  over time. Punishment only after a threshold is exceeded.
-#  TEST MODE: kicks instead of bans (ban-vl = 999999).
-#  A stable CPS of 8-12 does NOT flag. Flags only on inhuman
-#  values (20+ CPS, metronome under 2 ms, hit streaks <40 ms).
-# ============================================================
-
 prefix: "&8[&bFloppaAC&8]"
 
-# How many seconds until a player's VL drops by 1 (0 = disable decay)
 vl-decay-seconds: 30
 
-# Below this TPS movement checks are suspended
 min-tps: 18.5
 
-# Players with ping above this get looser thresholds
 high-ping: 220
 high-ping-leniency: 0.35
 
 alerts:
   format: "&8[&bFloppaAC&8] &c%player% &7failed &b%check% &8(VL: &c%vl%&8) &7ping: &e%ping% &7tps: &e%tps%"
   hover-details: true
-  # Copy of every flag sent DIRECTLY to the flagged player
   send-to-cheater: true
   cheater-format: "&8[&bFloppaAC&8] &eDetected: &b%check% &8(VL: &c%vl%&8) &7ping: &e%ping% &7tps: &e%tps%"
-  # Suspicions below the flag threshold (verbose mode)
   verbose-enabled: true
 
 punishments:
-  # Movement: first setback to legal ground, then kick
   movement-setback-vl: 2
   movement-kick-vl: 12
   movement-ban-vl: 999999
-  # FakeLag: own low kick threshold, because it ruins the game for others instantly
   fakelag-kick-vl: 6
-  # Combat: faster, because it ruins the game for others
   combat-kick-vl: 8
   combat-ban-vl: 999999
-  # Player: scaffold, nuker, badpackets
   player-kick-vl: 10
   player-ban-vl: 999999
   kick-command: "kick %player% FloppaAC: cheat detected (%check%)"
   ban-command: "ban %player% FloppaAC: cheat (%check%)"
 
-# Connection circuit breaker: kick on extremely unstable movement
 lagguard:
   kick-command: "kick %player% FloppaAC: unstable connection (lag)"
 
@@ -103,3 +84,4 @@ checks:
   InventoryB: { enabled: true, max-vl: 25 }
   InventoryC: { enabled: true, max-vl: 25 }
   LagGuard: { enabled: true, gap-ms: 900, max-gaps-per-minute: 6 }
+  XrayA: { enabled: true, max-vl: 25, window: 30, min-ores: 8, max-waste-per-ore: 1.2, los-streak: 4 }

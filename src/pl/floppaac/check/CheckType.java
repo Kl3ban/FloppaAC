@@ -1,6 +1,5 @@
 package pl.floppaac.check;
 
-/** Kategoria checka. Decyduje o progach kar w configu. */
 public enum CheckType {
     MOVEMENT("movement"),
     COMBAT("combat"),

@@ -22,10 +22,6 @@ import pl.floppaac.check.movement.FakeLagCheck;
 import pl.floppaac.check.player.InventoryCheck;
 import pl.floppaac.data.PlayerData;
 
-/**
- * Walka: atakujacy (reach, aura, clicker, krytyki, fakelag)
- * i ofiara (velocity). Referencje cachowane w polach.
- */
 public class CombatListener implements Listener {
 
     private final FloppaAC plugin;
@@ -53,10 +49,6 @@ public class CombatListener implements Listener {
         velocity = cm.get("VelocityA", VelocityCheck.class);
     }
 
-    /**
-     * Bot weryfikacyjny: anulowanie obrazen na LOWEST, zeby wlasciwy
-     * skaner walki (HIGH, ignoreCancelled) bota w ogole nie widzial.
-     */
     @EventHandler(priority = EventPriority.LOWEST)
     public void onBotHit(EntityDamageByEntityEvent e) {
         if (!(e.getEntity() instanceof LivingEntity)) {
@@ -73,7 +65,6 @@ public class CombatListener implements Listener {
         }
     }
 
-    /** Ochrona bota przed ogniem, lawa i innymi zrodlami. */
     @EventHandler(priority = EventPriority.LOWEST)
     public void onBotHurt(EntityDamageEvent e) {
         if (!(e.getEntity() instanceof LivingEntity)) {
@@ -97,9 +88,7 @@ public class CombatListener implements Listener {
         if (attacker.equals(victim)) {
             return;
         }
-        // Sweep mieczem: jeden zamach, wiele eventow obszarowych bez
-        // wlasnego machniecia i celowania. Skaner aury ich nie ocenia,
-        // bo kazdy wtorny cel dawalby falszywa flage NoSwing i kata.
+
         if (e.getCause() == EntityDamageEvent.DamageCause.ENTITY_SWEEP_ATTACK) {
             return;
         }
@@ -109,16 +98,14 @@ public class CombatListener implements Listener {
 
         boolean lagDesync = fakeLag.handleAttack(attacker, data);
         if (lagDesync) {
-            // Trafienie z wstrzymanego hitboxa (fakelag): anulowane na
-            // miejscu. Cheater nie zadaje obrazen, ktorych server nie widzi.
+
             e.setCancelled(true);
         }
-        // InventoryWalk: cios z otwartym ekwipunkiem - ghost trafienia
-        // plus flaga InventoryC od pierwszego ciosu.
+
         if (inventory.handleDamage(attacker, data)) {
             e.setCancelled(true);
         }
-        // Multitool: cios z podniesiona reka - ghost trafienia.
+
         if (multi.handleAttack(attacker, data)) {
             e.setCancelled(true);
         }
@@ -138,17 +125,17 @@ public class CombatListener implements Listener {
             double dist = attacker.getEyeLocation().distance(victim.getEyeLocation());
             aura.handleOrbit(attacker, data, victim, dist);
         } catch (IllegalArgumentException ex) {
-            // Inne swiaty, brak dystansu do orbity.
+
         }
         criticals.handle(attacker, data, victim, e.getDamage());
         inventory.handleAttack(attacker, data);
-        // Heurystyki dojrzaly: weryfikacja botem zamiast kary.
+
         try {
             botVerify.maybeVerify(attacker, data);
         } catch (Exception ex) {
-            // Weryfikacja nie blokuje walki.
+
         }
-        // Ofiara bedaca graczem: zapisz kierunek odrzutu do Velocity.
+
         if (victim instanceof Player) {
             Player victimPlayer = (Player) victim;
             velocity.onDamageFrom(victimPlayer,
@@ -162,9 +149,7 @@ public class CombatListener implements Listener {
         if (!(e.getEntity() instanceof Player)) {
             return;
         }
-        // Vanilla obrazenia od upadku: znacznik dla NoFall (nie dublujemy)
-        // oraz reset akumulatora spadku. Osobno przed filtrem przyczyn,
-        // bo FALL nie jest powodem odrzutu ani exemptionu predkosci.
+
         if (e.getCause() == EntityDamageEvent.DamageCause.FALL
                 || e.getCause() == EntityDamageEvent.DamageCause.FLY_INTO_WALL) {
             Player fallVictim = (Player) e.getEntity();
@@ -192,10 +177,7 @@ public class CombatListener implements Listener {
         Player victim = (Player) e.getEntity();
         PlayerData vd = plugin.getDataManager().get(victim);
         long now = System.currentTimeMillis();
-        // Wszystko co legalnie szarpie ruch (odrzut, eksplozja, strzala,
-        // ogien, trucizna, wither) wspolnie zasilaja karencje velocity.
-        // (W 1.7.5 FIRE/POISON/WITHER byly odsiewane wczesniej i ten
-        // exempt nigdy nie odpalil - przyczyna FP zombie podpalonego.)
+
         switch (e.getCause()) {
             case ENTITY_ATTACK:
             case ENTITY_SWEEP_ATTACK:
@@ -211,8 +193,7 @@ public class CombatListener implements Listener {
             default:
                 break;
         }
-        // Uzbrajamy VelocityA tylko przy przyczynach z realnym odrzutem;
-        // ogien/trucizna nie nadaja pedu, wiec oczekiwanie ruchu FP-owaloby.
+
         switch (e.getCause()) {
             case ENTITY_ATTACK:
             case ENTITY_SWEEP_ATTACK:
@@ -226,12 +207,6 @@ public class CombatListener implements Listener {
         }
     }
 
-    /**
-     * PlayerVelocityEvent: serwer wyslal pakiet odrzutu (zombie, strzala,
-     * TNT, nasz pushback). Tylko tu wiemy na 100%, ze nastepne ticki
-     * maja legalnie zaburzona grawitacje - checki fly/speed biora
-     * karencje z data.velocityExempt() i progiem kb w PlayerData.
-     */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onVelocity(PlayerVelocityEvent e) {
         PlayerData vd = plugin.getDataManager().get(e.getPlayer());
@@ -246,10 +221,9 @@ public class CombatListener implements Listener {
         }
         double horiz = Math.hypot(v.getX(), v.getZ());
         double strength = Math.max(horiz, Math.abs(v.getY()) * 0.8);
-        // Odbicie pionowe po odrzucie moze wygladac jak poczatek lotu:
-        // immunizacja na sygnaly "no gravity" skalowana sila odrzutu.
+
         vd.kbTicksLeft = 20 + (int) Math.min(40, strength * 40.0);
-        // Odrzut moze wypchnac poza limit predkosci poziomej.
+
         vd.kbSinceBigMs = now;
     }
 }

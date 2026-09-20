@@ -2,12 +2,6 @@ package pl.floppaac.util;
 
 import java.util.Deque;
 
-/**
- * Czysta statystyka klikow bez Bukkita.
- * FloppaAC celowo NIE flaguje stabilnego CPS.
- * Stabilne 8 do 12 CPS przez 5 s jest realne u dobrego gracza.
- * Flaga tylko przy wartosciach nieludzkich.
- */
 public final class ClickStats {
 
     private ClickStats() {
@@ -37,7 +31,6 @@ public final class ClickStats {
         return Math.sqrt(acc / (double) gaps.size());
     }
 
-    /** CPS z liczby trafien w oknie czasowym. */
     public static double cps(Deque<Long> hitTimes, long windowMs) {
         if (hitTimes.isEmpty()) {
             return 0.0;
@@ -53,10 +46,6 @@ public final class ClickStats {
         return (double) n * 1000.0 / (double) windowMs;
     }
 
-    /**
-     * Wynik oceny: 0 legalnie, 1 CPS niemozliwy, 2 metronom ekstremalny,
-     * 3 seria ultra szybkich podwojnych trafien.
-     */
     public static int classify(Deque<Long> gaps, Deque<Long> hitTimes) {
         if (gaps.size() < 30 || hitTimes.size() < 10) {
             return 0;
