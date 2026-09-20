@@ -22,7 +22,7 @@ The project is under active development on a live server. Thresholds are tuned a
 | Movement | FlyA, FlyB, FlyGlide, GroundSpoofA, SpeedA, SpeedB, TimerA, JesusA, StepA, NoFallA, SpiderA, SprintSpoofA, PhaseA |
 | FakeLag and network | FakeLagA (choke: gap plus burst), FakeLagB (attack inside a gap), FakeLagC (desync at low ping), LagGuard (connection fuse) |
 | Combat | ReachA, KillAuraA (angle), KillAuraJ (rotation GCD), KillAuraBot (NPC verifier), MultiActions, AutoClickerA, VelocityA, CriticalsA |
-| Player | ScaffoldA, FastBreakA, NukerA, BadPacketsA, NoSlowA, InventoryA, AntiAutoWeb, AutoTrap |
+| Player | ScaffoldA, FastBreakA, NukerA, BadPacketsA, NoSlowA, InventoryA, AntiAutoWeb, AutoTrap, XrayA (ore ratio and line of sight), DigReachA (dig range) |
 
 ## Commands
 
